@@ -17,7 +17,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(query, index) in queries" :v-key="query.sql">
+					<tr v-for="(query, index) in queries" :key="query.sql">
 						<td>
 							{{ index }}
 						</td>
@@ -51,7 +51,7 @@ import { generateUrl } from '@nextcloud/router'
 export default {
 	name: 'DatabaseProfilerView',
 	components: {
-		QueryExplaination,
+		QueryExplanation,
 	},
 	data() {
 		return {
@@ -84,6 +84,7 @@ table {
 	margin: 1em 0;
 	width: 100%;
 }
+
 table, tr, th, td {
 	background: var(--table-background);
 	border-collapse: collapse;

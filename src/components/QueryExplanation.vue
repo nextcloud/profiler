@@ -21,14 +21,14 @@
 			</table>
 		</div>
 		<div v-else>
-			<pre v-for="row in explanation.data">{{ row }}</pre>
+			<pre v-for="row in explanation.data" :key="row">{{ row }}</pre>
 		</div>
 	</div>
 </template>
 
 <script>
 export default {
-	name: 'QueryExplaination',
+	name: 'QueryExplanation',
 	props: {
 		explanation: {
 			type: Object,

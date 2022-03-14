@@ -2,8 +2,7 @@
 	<div id="profiler" class="content">
 		<AppNavigation>
 			<template #list>
-				<AppNavigationCaption
-					title="Categories" />
+				<AppNavigationCaption title="Categories" />
 				<li v-for="cat in categoryInfo"
 					:key="cat.id">
 					<router-link class="app-navigation-entry-link"
@@ -14,8 +13,7 @@
 					</router-link>
 				</li>
 
-				<AppNavigationCaption
-					title="Requests" />
+				<AppNavigationCaption title="Requests" />
 				<div class="select-container">
 					<Multiselect v-model="selectedProfile"
 						:options="recentProfiles"
@@ -36,8 +34,8 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import { AppNavigation, AppNavigationItem, AppContent, AppNavigationCaption, Multiselect } from '@nextcloud/vue'
-import ProfileHeader from './components/ProfileHeader'
+import { AppNavigation, AppContent, AppNavigationCaption, Multiselect } from '@nextcloud/vue'
+import ProfileHeader from '../components/ProfileHeader'
 import { mapState } from 'vuex'
 
 const token = loadState('profiler', 'token')
@@ -47,7 +45,6 @@ export default {
 	name: 'Profiler',
 	components: {
 		AppNavigation,
-		AppNavigationItem,
 		AppContent,
 		AppNavigationCaption,
 		ProfileHeader,
@@ -111,6 +108,7 @@ export default {
 		width: 100%
 	}
 }
+
 .content {
 	height: 100%;
 	box-sizing: border-box;
@@ -118,9 +116,11 @@ export default {
 	min-height: 100%;
 	width: 100%;
 }
+
 .router-wrapper {
 	padding: 2rem;
 }
+
 .app-navigation-entry-link {
 	background-size: 16px 16px;
 	background-position: 14px center;

@@ -4,35 +4,35 @@
 		<div style="overflow-x:auto;">
 			<table>
 				<thead>
-				<tr>
-					<th class="nowrap">
-						#
-					</th>
-					<th class="nowrap">
-						Time<span/>
-					</th>
-					<th style="width: 100%;">
-						Info
-					</th>
-				</tr>
+					<tr>
+						<th class="nowrap">
+							#
+						</th>
+						<th class="nowrap">
+							Time
+						</th>
+						<th style="width: 100%;">
+							Info
+						</th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr v-for="(request, index) in ldap" :v-key="index">
-					<td>
-						{{ index }}
-					</td>
-					<td>
-						{{ ((request.start - request.end) * 1000).toFixed(1) }}
-						ms
-					</td>
-					<td>
+					<tr v-for="(request, index) in ldap" :key="index">
+						<td>
+							{{ index }}
+						</td>
+						<td>
+							{{ ((request.start - request.end) * 1000).toFixed(1) }}
+							ms
+						</td>
+						<td>
 							<pre>
 {{ request.query }}
-						</pre>
-						<h4>Parameters:</h4>
-						{{ request.args }}
-					</td>
-				</tr>
+							</pre>
+							<h4>Parameters:</h4>
+							{{ request.args }}
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

@@ -20,7 +20,7 @@
  *
  */
 import Vue from 'vue'
-import App from './ProfilerToolbar.vue'
+import App from './views/ProfilerToolbar.vue'
 import Vuex from 'vuex'
 import store from './store'
 

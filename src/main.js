@@ -21,7 +21,7 @@
  */
 
 import Vue from 'vue'
-import App from './Profiler.vue'
+import App from './views/Profiler.vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import router from './router/router'

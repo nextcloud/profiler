@@ -49,7 +49,6 @@ export default {
 }
 </script>
 
-
 <style lang="scss" scoped>
 table {
 	background: var(--color-background-darker);
@@ -58,6 +57,7 @@ table {
 	margin: 1em 0;
 	width: 100%;
 }
+
 table, tr, th, td {
 	background: var(--table-background);
 	border-collapse: collapse;

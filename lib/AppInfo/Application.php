@@ -23,6 +23,11 @@ declare(strict_types=1);
 
 namespace OCA\Profiler\AppInfo;
 
+use OCP\AppFramework\Services\IInitialState;
+use OCP\Diagnostics\IEventLogger;
+use OCP\IGroupManager;
+use OCP\IRequest;
+use OCP\IUserSession;
 use OCP\Profiler\IProfiler;
 use OCA\Profiler\DataCollector\EventLoggerDataProvider;
 use OCA\Profiler\DataCollector\HttpDataCollector;
@@ -30,6 +35,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\Util;
 
 class Application extends App implements IBootstrap {
 
@@ -41,7 +47,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-
 	}
 
 	public function boot(IBootContext $context): void {
@@ -50,7 +55,15 @@ class Application extends App implements IBootstrap {
 		/** @var IProfiler $profiler */
 		$profiler = $server->get(IProfiler::class);
 		$profiler->add(new HttpDataCollector());
-		$profiler->add(new EventLoggerDataProvider($server->getEventLogger()));
+		$profiler->add(new EventLoggerDataProvider($server->get(IEventLogger::class)));
 
+		$context->injectFn([$this, 'injectJs']);
+	}
+
+	public function injectJs(IProfiler $profiler, IRequest $request, IUserSession $userSession, IGroupManager $groupManager, IInitialState $initialState) {
+		if ($profiler->isEnabled() && $userSession->isLoggedIn() && $groupManager->isAdmin($userSession->getUser()->getUID())) {
+			$initialState->provideInitialState('request-token', $request->getId());
+			Util::addScript('profiler', 'profiler-toolbar');
+		}
 	}
 }

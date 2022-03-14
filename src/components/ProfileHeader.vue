@@ -60,12 +60,15 @@ export default {
 		}
 	}
 }
+
 .status-success {
 	background-color: rgba(112, 196, 137, 0.75);
 }
+
 .status-error {
 	background-color: rgba(231, 55, 51, 0.65);
 }
+
 .status-warning {
 	background-color: rgba(213, 118, 41, 0.75);
 }
