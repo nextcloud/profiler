@@ -4,7 +4,7 @@
 			<table>
 				<thead>
 					<tr>
-						<th v-for="(key, label) in explanation.data[0]" :key="key">
+						<th v-for="(key, label) in explanation.data[0]" :key="label">
 							<td style="padding: 1rem;">
 								{{ label }}
 							</td>
@@ -13,7 +13,7 @@
 				</thead>
 				<tbody>
 					<tr v-for="row in explanation.data" :key="row">
-						<td v-for="(item, key) in row" :key="key" style="padding: 1rem">
+						<td v-for="(item, key) in row" :key="item" style="padding: 1rem">
 							{{ item }}
 						</td>
 					</tr>

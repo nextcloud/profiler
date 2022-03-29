@@ -17,7 +17,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(query, index) in queries" :key="query.sql">
+					<tr v-for="(query, index) in queries" :key="index">
 						<td>
 							{{ index }}
 						</td>
@@ -33,7 +33,7 @@
 							<button v-if="query.explainable && explainedQueries[index] === undefined" @click="explainQuery(index)">
 								Explain query
 							</button>
-							<QueryExplanation v-else-if="explainedQueries[index]" :explaination="explainedQueries[index] ? explainedQueries[index] : ''" />
+							<QueryExplanation v-else-if="explainedQueries[index]" :explanation="explainedQueries[index] ? explainedQueries[index] : ''" />
 						</td>
 					</tr>
 				</tbody>

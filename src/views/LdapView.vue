@@ -22,7 +22,7 @@
 							{{ index }}
 						</td>
 						<td>
-							{{ ((request.start - request.end) * 1000).toFixed(1) }}
+							{{ ((request.end - request.start) * 1000).toFixed(1) }}
 							ms
 						</td>
 						<td>
