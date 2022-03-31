@@ -68,7 +68,7 @@ class MainController extends Controller {
 	public function profiler(string $profiler, string $token): TemplateResponse {
 		$profiles = $this->profiler->find(null, 20, null, null, null);
 
-		\OCP\Util::addScript('profiler', 'profiler');
+		\OCP\Util::addScript('profiler', 'profiler-main');
 		$this->initialState->provideInitialState('recentProfiles', $profiles);
 		$this->initialState->provideInitialState('token', $token);
 
