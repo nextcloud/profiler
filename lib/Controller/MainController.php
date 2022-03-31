@@ -37,8 +37,6 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\AppFramework\Services\InitialStateProvider;
-use OCP\INavigationManager;
 use OCP\IRequest;
 use OCP\Profiler\IProfiler;
 
