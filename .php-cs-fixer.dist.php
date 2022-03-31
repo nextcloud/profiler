@@ -10,6 +10,7 @@ $config = new Config();
 $config
 	->getFinder()
 	->notPath('build')
+	->notPath('composer')
 	->notPath('l10n')
 	->notPath('node_modules')
 	->notPath('src')

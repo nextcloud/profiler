@@ -16,7 +16,6 @@ use OCP\IRequest;
 use PDO;
 
 class DatabaseProfilerController extends Controller {
-
 	private IProfiler $profiler;
 
 	private IDBConnection $connection;
@@ -27,60 +26,60 @@ class DatabaseProfilerController extends Controller {
 		$this->connection = $connection;
 	}
 
-    /**
-     * Renders the profiler panel for the given token.
-     */
-    public function explain(string $token, int $query): Response {
+	/**
+	 * Renders the profiler panel for the given token.
+	 */
+	public function explain(string $token, int $query): Response {
 		/** @var DbDataCollector $profile */
-        $collector = $this->profiler->loadProfile($token)->getCollector('db');
-        $queries = $collector->getQueries();
+		$collector = $this->profiler->loadProfile($token)->getCollector('db');
+		$queries = $collector->getQueries();
 
-        if (!isset($queries[$query])) {
-            return new NotFoundResponse();
-        }
-
-        $query = $queries[$query];
-        if (!$query['explainable']) {
+		if (!isset($queries[$query])) {
 			return new NotFoundResponse();
-        }
+		}
 
-        try {
-            $platform = $this->connection->getDatabasePlatform();
-            if ($platform instanceof SqlitePlatform) {
-                $results = $this->explainSQLitePlatform($query);
-            } elseif ($platform instanceof OraclePlatform) {
-                $results = $this->explainOraclePlatform($query);
-            } else {
-                $results = $this->explainOtherPlatform($query);
-            }
-        } catch (Exception $e) {
-            return new DataResponse('This query cannot be explained.');
-        }
+		$query = $queries[$query];
+		if (!$query['explainable']) {
+			return new NotFoundResponse();
+		}
 
-        return new DataResponse([
-            'data' => $results,
-            'query' => $query,
-        ]);
-    }
+		try {
+			$platform = $this->connection->getDatabasePlatform();
+			if ($platform instanceof SqlitePlatform) {
+				$results = $this->explainSQLitePlatform($query);
+			} elseif ($platform instanceof OraclePlatform) {
+				$results = $this->explainOraclePlatform($query);
+			} else {
+				$results = $this->explainOtherPlatform($query);
+			}
+		} catch (Exception $e) {
+			return new DataResponse('This query cannot be explained.');
+		}
 
-    private function explainSQLitePlatform(array $query): array {
-        $params = $query['params'];
+		return new DataResponse([
+			'data' => $results,
+			'query' => $query,
+		]);
+	}
 
-        return $this->connection->executeQuery('EXPLAIN QUERY PLAN ' . $query['sql'], $params, $query['types'])
-            ->fetchAll(PDO::FETCH_ASSOC);
-    }
+	private function explainSQLitePlatform(array $query): array {
+		$params = $query['params'];
 
-    private function explainOtherPlatform(array $query): array {
-        $params = $query['params'];
+		return $this->connection->executeQuery('EXPLAIN QUERY PLAN ' . $query['sql'], $params, $query['types'])
+			->fetchAll(PDO::FETCH_ASSOC);
+	}
 
-        return $this->connection->executeQuery('EXPLAIN ' . $query['sql'], $params, $query['types'])
-            ->fetchAll(PDO::FETCH_ASSOC);
-    }
+	private function explainOtherPlatform(array $query): array {
+		$params = $query['params'];
 
-    private function explainOraclePlatform(array $query): array {
-        $this->connection->executeQuery('EXPLAIN PLAN FOR ' . $query['sql']);
+		return $this->connection->executeQuery('EXPLAIN ' . $query['sql'], $params, $query['types'])
+			->fetchAll(PDO::FETCH_ASSOC);
+	}
 
-        return $this->connection->executeQuery('SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY())')
-            ->fetchAll(PDO::FETCH_ASSOC);
-    }
+	private function explainOraclePlatform(array $query): array {
+		$this->connection->executeQuery('EXPLAIN PLAN FOR ' . $query['sql']);
+
+		return $this->connection->executeQuery('SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY())')
+			->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
