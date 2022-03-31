@@ -6,14 +6,15 @@
 	<summary>Profiler for nextcloud</summary>
 	<description><![CDATA[Provides a profiler for Nextcloud. Making developing fast apps easier.]]></description>
 	<version>1.0.0</version>
-	<licence>AGPL-3.0-or-later</licence>
+	<licence>agpl</licence>
 	<author>Carl Schwan</author>
 	<namespace>Profiler</namespace>
-	<default_enable/>
 
 	<category>customization</category>
 
-	<bugs>https://github.com/nextcloud/server/issues</bugs>
+	<website>https://github.com/nextcloud/profiler</website>
+	<bugs>https://github.com/nextcloud/profiler/issues</bugs>
+	<repository>https://github.com/nextcloud/profiler.git</repository>
 
 	<dependencies>
 		<nextcloud min-version="24" max-version="24"/>
