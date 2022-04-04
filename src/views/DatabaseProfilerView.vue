@@ -34,6 +34,7 @@
 								Explain query
 							</button>
 							<QueryExplanation v-else-if="explainedQueries[index]" :explanation="explainedQueries[index] ? explainedQueries[index] : ''" />
+							<Backtrace v-if="query.backtrace" :backtrace="query.backtrace" />
 						</td>
 					</tr>
 				</tbody>
@@ -45,6 +46,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import QueryExplanation from '../components/QueryExplanation'
+import Backtrace from '../components/Backtrace'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 
@@ -52,6 +54,7 @@ export default {
 	name: 'DatabaseProfilerView',
 	components: {
 		QueryExplanation,
+		Backtrace,
 	},
 	data() {
 		return {
