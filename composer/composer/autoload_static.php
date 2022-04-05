@@ -23,6 +23,8 @@ class ComposerStaticInitProfiler
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'OCA\\Profiler\\AppInfo\\Application' => __DIR__ . '/..' . '/../lib/AppInfo/Application.php',
+        'OCA\\Profiler\\Command\\Disable' => __DIR__ . '/..' . '/../lib/Command/Disable.php',
+        'OCA\\Profiler\\Command\\Enable' => __DIR__ . '/..' . '/../lib/Command/Enable.php',
         'OCA\\Profiler\\Controller\\DatabaseProfilerController' => __DIR__ . '/..' . '/../lib/Controller/DatabaseProfilerController.php',
         'OCA\\Profiler\\Controller\\MainController' => __DIR__ . '/..' . '/../lib/Controller/MainController.php',
         'OCA\\Profiler\\DataCollector\\EventLoggerDataProvider' => __DIR__ . '/..' . '/../lib/DataCollector/EventLoggerDataProvider.php',
