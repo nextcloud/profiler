@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import Vue from 'vue'
 import Vuex, { Store } from 'vuex'
 import axios from '@nextcloud/axios'

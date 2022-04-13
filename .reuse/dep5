@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: profiler
+Upstream-Contact: Carl Schwan <carl@carlschwan.eu>
+Source: https://github.com/nextcloud/profiler
+
+Files: .github/* .editorconfig babel.config.js .php-cs-fixer.dist.php package-lock.json package.json composer.json composer.lock README.md img/app-dark.svg img/app.svg webpack.js stylelint.config.js .eslintrc.js .gitignore .jshintrc .l10nignore
+Copyright: none
+License: CC0-1.0
