@@ -5,6 +5,7 @@
 			<p><b>AppName:</b> {{ router.appName }}</p>
 			<p><b>Controller name:</b> {{ router.controllerName }}</p>
 			<p><b>Action name:</b> {{ router.actionName }}</p>
+			<p><b>Peak memory usage:</b> {{ memory.memory / 1024 / 1024 }} MiB (PHP Limit: {{ memory.memory_limit / 1024 / 1024 }} MiB)</p>
 		</div>
 		<div v-if="http">
 			<h2>Request</h2>
@@ -37,6 +38,9 @@ export default {
 		},
 		router() {
 			return this.profiles[this.$route.params.token]?.collectors.router
+		},
+		memory() {
+			return this.profiles[this.$route.params.token]?.collectors?.memory
 		},
 		...mapState(['profiles']),
 	},

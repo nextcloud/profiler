@@ -31,6 +31,7 @@ use OCP\IUserSession;
 use OCP\Profiler\IProfiler;
 use OCA\Profiler\DataCollector\EventLoggerDataProvider;
 use OCA\Profiler\DataCollector\HttpDataCollector;
+use OCA\Profiler\DataCollector\MemoryDataCollector;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -56,6 +57,7 @@ class Application extends App implements IBootstrap {
 		$profiler = $server->get(IProfiler::class);
 		$profiler->add(new HttpDataCollector());
 		$profiler->add(new EventLoggerDataProvider($server->get(IEventLogger::class)));
+		$profiler->add(new MemoryDataCollector());
 
 		$context->injectFn([$this, 'injectJs']);
 	}
