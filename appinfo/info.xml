@@ -5,7 +5,7 @@
 	<name>Profiler</name>
 	<summary>Profiler for nextcloud</summary>
 	<description><![CDATA[Provides a profiler for Nextcloud. Making developing fast apps easier.]]></description>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<licence>agpl</licence>
 	<author>Carl Schwan</author>
 	<namespace>Profiler</namespace>
@@ -17,7 +17,7 @@
 	<repository>https://github.com/nextcloud/profiler.git</repository>
 
 	<dependencies>
-		<nextcloud min-version="24" max-version="24"/>
+		<nextcloud min-version="25" max-version="25"/>
 	</dependencies>
 
 	<commands>
