@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <template>
-	<header class="top-bar" v-if="profile" :class="background">
+	<header v-if="profile" class="top-bar" :class="background">
 		<h2 class="url">
 			{{ profile.url }}
 		</h2>

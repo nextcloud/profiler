@@ -20,12 +20,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<p><b>User Agent:</b> {{ http.request.userAgent }}</p>
 			<p><b>Http Protocol:</b> {{ http.request.httpProtocol }}</p>
 			<p><b>Params:</b></p>
-			<div v-for="(param, key) in http.request.params" :key="key">{{ key }}: <i>{{ param }}</i></div>
+			<div v-for="(param, key) in http.request.params" :key="key">
+				{{ key }}: <i>{{ param }}</i>
+			</div>
 			<h2>Response</h2>
 			<p><b>Headers:</b></p>
 			<p><b>Status code:</b> {{ http.response.statusCode }}</p>
 			<p><b>Etag:</b> {{ http.response.ETag }}</p>
-			<div v-for="(param, key) in http.response.headers" :key="key">{{ key }}: <i>{{ param }}</i></div>
+			<div v-for="(param, key) in http.response.headers" :key="key">
+				{{ key }}: <i>{{ param }}</i>
+			</div>
 		</div>
 	</div>
 	<div v-else>
