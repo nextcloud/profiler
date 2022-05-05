@@ -86,6 +86,10 @@ export default {
 					id: 'ldap',
 					name: 'LDAP',
 				},
+				{
+					id: 'cache',
+					name: 'Cache',
+				},
 			],
 		}
 	},
