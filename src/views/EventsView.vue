@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div>
 		<h2>Events</h2>
-		<TimelineNode :event="eventTree" />
+		<Timeline v-if="events" :events="events" />
 		<div style="overflow-x:auto;">
 			<table>
 				<thead>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 						</td>
 						<td>
 							{{ (event.duration * 1000).toFixed(1) }} ms
-							(Start: {{ event.start * 1000 }}, End: {{ event.stop * 1000 }})
+							(Start: {{ (event.start - start) * 1000 }}, End: {{ (event.stop - start) * 1000 }})
 						</td>
 						<td>
 							{{ event.description }}
@@ -44,74 +44,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { mapState } from 'vuex'
-import TimelineNode from '../components/TimelineNode'
+import Timeline from '../components/Timeline'
 
 export default {
 	name: 'EventsView',
 	components: {
-		TimelineNode,
+		Timeline,
 	},
 	computed: {
 		events() {
 			return this.profiles[this.$route.params.token]?.collectors.event
 		},
-		eventTree() {
-			if (!this.profiles[this.$route.params.token]?.collectors.event) {
-				return {
-					id: 'root',
-					duration: 0,
-					start: 0,
-					stop: 0,
-					description: '',
-					children: [],
-				}
-			}
-			const runtimeStop = this.events.runtime.stop
-			const events = Object.values(this.events)
-			events.forEach(event => {
-				if (!event.stop) {
-					event.stop = runtimeStop
-				}
-			})
-			events.sort((a, b) => {
-				if (a.start < b.start) {
-					return -1
-				} else if (a.start > b.start) {
-					return 1
-				} else {
-					// if 2 events have the same start, the one that ends last should be sorted first as it is the parent
-					return b.stop - a.stop
-				}
-			})
-			const startTime = events[0].start
-			const stopTime = Math.max(...events.map(event => event.stop))
-			let current = {
-				id: 'root',
-				duration: stopTime - startTime,
-				start: 0,
-				stop: stopTime - startTime,
-				children: [],
-			}
-			const stack = [current]
-
-			for (let event of events) {
-				event = {
-					id: event.id,
-					duration: event.duration,
-					start: event.start - startTime,
-					stop: event.stop - startTime,
-					description: event.description,
-					children: [],
-				}
-				while (event.stop > current.stop) {
-					current = stack.pop()
-				}
-
-				current.children.push(event)
-				stack.push(current)
-				current = event
-			}
-			return stack[0]
+		start() {
+			return this.profiles[this.$route.params.token]?.collectors.event.init?.start
 		},
 		...mapState(['profiles']),
 	},
