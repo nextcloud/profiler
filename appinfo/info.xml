@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 		<command>OCA\Profiler\Command\Enable</command>
 		<command>OCA\Profiler\Command\Disable</command>
 		<command>OCA\Profiler\Command\ListCommand</command>
+		<command>OCA\Profiler\Command\Export</command>
 		<command>OCA\Profiler\Command\Clear</command>
 	</commands>
 </info>
