@@ -1,0 +1,15 @@
+name: 'Profiler'
+description: 'Record a profile for a script'
+inputs:
+    run:
+        description: 'command to profile'
+        required: true
+    output:
+        description: 'file to export the profile to'
+        required: true
+    compare-with:
+        description: 'exported profile to compare to'
+        required: false
+runs:
+    using: 'node16'
+    main: 'action/dist/index.js'
