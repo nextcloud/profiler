@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace OCA\Profiler\Command;
 
-
 use OC\Core\Command\Base;
 use OCP\Profiler\IProfiler;
 use Symfony\Component\Console\Input\InputInterface;

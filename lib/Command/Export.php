@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace OCA\Profiler\Command;
 
-
 use OC\Core\Command\Base;
 use OCP\Profiler\IProfiler;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,7 +55,7 @@ class Export extends Base {
 
 		$profiles = $this->profiler->find($url, $limit, null, $since, $before);
 		$profiles = array_reverse($profiles);
-		$profiles = array_map(function(array $profile) {
+		$profiles = array_map(function (array $profile) {
 			return $this->profiler->loadProfile($profile['token']);
 		}, $profiles);
 

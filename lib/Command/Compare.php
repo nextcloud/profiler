@@ -40,10 +40,10 @@ class Compare extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$from = json_decode(file_get_contents($input->getArgument('first')), true);
 		$to = json_decode(file_get_contents($input->getArgument('second')), true);
-		$fromQuery = array_sum(array_map(function (array $profile) {
+		$fromQuery = array_sum(array_map(function (array $profile): int {
 			return count($profile['collectors']['db']['queries']);
 		}, $from));
-		$toQuery = array_sum(array_map(function (array $profile) {
+		$toQuery = array_sum(array_map(function (array $profile): int {
 			return count($profile['collectors']['db']['queries']);
 		}, $to));
 
@@ -61,9 +61,9 @@ class Compare extends Base {
 		foreach ($diff as $item) {
 			if (isset($item['from']) && isset($item['to'])) {
 				$this->compareSingle($output, $item['from'], $item['to']);
-			} else if (isset($item['added'])) {
+			} elseif (isset($item['added'])) {
 				$this->outputAdded($output, $item['added']);
-			} else if (isset($item['removed'])) {
+			} elseif (isset($item['removed'])) {
 				$this->outputRemoved($output, $item['removed']);
 			}
 		}
@@ -141,10 +141,10 @@ class Compare extends Base {
 		}
 
 		$result = array_merge($added, $removed, $match);
-		$result = array_filter($result, function($item) {
-			return $item['index'] >=0;
+		$result = array_filter($result, function ($item) {
+			return $item['index'] >= 0;
 		});
-		usort($result, function($a, $b) {
+		usort($result, function ($a, $b) {
 			return $a['index'] <=> $b['index'];
 		});
 
