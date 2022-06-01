@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 const { spawn } = require('child_process')
 const { Transform } = require('stream')
 const { Buffer } = require('buffer')
