@@ -1955,14 +1955,6 @@ module.exports = require("assert");
 
 /***/ }),
 
-/***/ 300:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("buffer");
-
-/***/ }),
-
 /***/ 81:
 /***/ ((module) => {
 
@@ -2035,14 +2027,6 @@ module.exports = require("path");
 
 /***/ }),
 
-/***/ 781:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("stream");
-
-/***/ }),
-
 /***/ 404:
 /***/ ((module) => {
 
@@ -2100,9 +2084,10 @@ module.exports = require("util");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
+// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 const { spawn } = __nccwpck_require__(81)
-const { Transform } = __nccwpck_require__(781)
-const { Buffer } = __nccwpck_require__(300)
 const { rm } = __nccwpck_require__(292)
 
 const core = __nccwpck_require__(186)
@@ -2110,31 +2095,17 @@ const core = __nccwpck_require__(186)
 // Default shell invocation used by GitHub Action 'run:'
 const shellArgs = ['--noprofile', '--norc', '-eo', 'pipefail', '-c']
 
-class RecordStream extends Transform {
-	constructor () {
-		super()
-		this._data = Buffer.from([])
-	}
-
-	get output () {
-		return this._data
-	}
-
-	_transform (chunk, encoding, callback) {
-		this._data = Buffer.concat([this._data, chunk])
-		callback(null, chunk)
-	}
-}
-
 function cmd(command) {
 	return new Promise((resolve, reject) => {
-		const outRec = new RecordStream()
-		const errRec = new RecordStream()
-
+		let stdout = ""
 		const cmd = spawn('bash', [...shellArgs, command])
 
-		cmd.stdout.pipe(outRec)
-		cmd.stderr.pipe(errRec)
+		cmd.stdout.on('data', (data) => {
+			stdout = stdout + data
+		})
+		cmd.stderr.on('data', (data) => {
+			console.error(data);
+		})
 
 		cmd.on('error', error => {
 			reject(error)
@@ -2143,8 +2114,7 @@ function cmd(command) {
 		cmd.on('close', code => {
 			resolve({
 				code: code,
-				stdout: outRec.output.toString(),
-				stderr: errRec.output.toString()
+				stdout,
 			})
 		})
 	})
@@ -2158,9 +2128,13 @@ async function ensureApp() {
 	let {stdout} = await occ('app:list');
 	if (!stdout.includes('profiler')) {
 		console.log('installing profiler')
-		await cmd(`git clone -b cli https://github.com/nextcloud/profiler apps/profiler`)
+		await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
 		await occ(`app:enable --force profiler`)
-		await occ(`profiler:enable`)
+		let {code, stdout} = await occ(`profiler:enable`);
+		if (code !== 0) {
+			console.log(stdout);
+			throw new Error('Failed to enable profiler');
+		}
 	}
 }
 
@@ -2174,12 +2148,16 @@ async function run (command, output, compare) {
 		await rm('data/profiler', {recursive: true})
 	} catch (e) {}
 
-	let {code} = await cmd(command)
+	console.log('running command')
+	let cmdOut = await cmd(command)
+
+	console.log(cmdOut.stdout);
 
 
-	if (code !== 0) {
-		throw new Error(`Process completed with exit code ${code}.`)
+	if (cmdOut.code !== 0) {
+		throw new Error(`Process completed with exit code ${cmdOut.code}.`)
 	}
+	console.log('processing result')
 
 	let {stdout} = await occ('profiler:list');
 	console.log(stdout);
