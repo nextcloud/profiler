@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const { spawn } = require('child_process')
-const { Transform } = require('stream')
-const { Buffer } = require('buffer')
 const { rm } = require('fs/promises')
 
 const core = require('@actions/core')
@@ -11,31 +9,17 @@ const core = require('@actions/core')
 // Default shell invocation used by GitHub Action 'run:'
 const shellArgs = ['--noprofile', '--norc', '-eo', 'pipefail', '-c']
 
-class RecordStream extends Transform {
-	constructor () {
-		super()
-		this._data = Buffer.from([])
-	}
-
-	get output () {
-		return this._data
-	}
-
-	_transform (chunk, encoding, callback) {
-		this._data = Buffer.concat([this._data, chunk])
-		callback(null, chunk)
-	}
-}
-
 function cmd(command) {
 	return new Promise((resolve, reject) => {
-		const outRec = new RecordStream()
-		const errRec = new RecordStream()
-
+		let stdout = ""
 		const cmd = spawn('bash', [...shellArgs, command])
 
-		cmd.stdout.pipe(outRec)
-		cmd.stderr.pipe(errRec)
+		cmd.stdout.on('data', (data) => {
+			stdout = stdout + data
+		})
+		cmd.stderr.on('data', (data) => {
+			console.error(data);
+		})
 
 		cmd.on('error', error => {
 			reject(error)
@@ -44,8 +28,7 @@ function cmd(command) {
 		cmd.on('close', code => {
 			resolve({
 				code: code,
-				stdout: outRec.output.toString(),
-				stderr: errRec.output.toString()
+				stdout,
 			})
 		})
 	})
@@ -59,9 +42,13 @@ async function ensureApp() {
 	let {stdout} = await occ('app:list');
 	if (!stdout.includes('profiler')) {
 		console.log('installing profiler')
-		await cmd(`git clone -b cli https://github.com/nextcloud/profiler apps/profiler`)
+		await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
 		await occ(`app:enable --force profiler`)
-		await occ(`profiler:enable`)
+		let {code, stdout} = await occ(`profiler:enable`);
+		if (code !== 0) {
+			console.log(stdout);
+			throw new Error('Failed to enable profiler');
+		}
 	}
 }
 
@@ -75,12 +62,16 @@ async function run (command, output, compare) {
 		await rm('data/profiler', {recursive: true})
 	} catch (e) {}
 
-	let {code} = await cmd(command)
+	console.log('running command')
+	let cmdOut = await cmd(command)
+
+	console.log(cmdOut.stdout);
 
 
-	if (code !== 0) {
-		throw new Error(`Process completed with exit code ${code}.`)
+	if (cmdOut.code !== 0) {
+		throw new Error(`Process completed with exit code ${cmdOut.code}.`)
 	}
+	console.log('processing result')
 
 	let {stdout} = await occ('profiler:list');
 	console.log(stdout);
