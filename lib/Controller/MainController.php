@@ -32,7 +32,7 @@ class MainController extends Controller {
 	public function index(): RedirectResponse {
 		$profiles = $this->profiler->find(null, 1, null, null, null);
 
-		return new RedirectResponse('/index.php/app/profiler/db/' . $profiles['token']);
+		return new RedirectResponse('/index.php/apps/profiler/profiler/db/' . $profiles['token'] ?? 'empty');
 	}
 
 	/**
