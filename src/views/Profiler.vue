@@ -22,11 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				<AppNavigationCaption title="Requests" />
 				<div class="select-container">
 					<Multiselect v-model="selectedProfile"
-						:options="recentProfiles"
+						:options="recentProfiles.concat(importedProfiles)"
 						class="select"
 						label="url"
 						track-by="token" />
 				</div>
+
+				<AppNavigationCaption title="Import requests" />
+				<input type="file" multiple @change="importFiles">
 			</template>
 		</AppNavigation>
 		<AppContent>
@@ -93,7 +96,7 @@ export default {
 			],
 		}
 	},
-	computed: mapState(['profiles']),
+	computed: mapState(['profiles', 'importedProfiles']),
 	watch: {
 		selectedProfile(newToken) {
 			this.$store.dispatch('loadProfile', { token: newToken.token })
@@ -106,6 +109,13 @@ export default {
 	},
 	mounted() {
 		this.$store.dispatch('loadProfile', { token })
+	},
+	methods: {
+		importFiles(event) {
+			for (const file of event.target.files) {
+				this.$store.dispatch('importProfile', { file })
+			}
+		},
 	},
 }
 </script>
