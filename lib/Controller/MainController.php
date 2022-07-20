@@ -13,6 +13,7 @@ use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\Profiler\IProfiler;
 
 class MainController extends Controller {
@@ -20,10 +21,19 @@ class MainController extends Controller {
 
 	private IInitialState $initialState;
 
-	public function __construct(string $appName, IRequest $request, IProfiler $profiler, IInitialState $initialState) {
+	private IURLGenerator $urlGenerator;
+
+	public function __construct(
+		string $appName,
+		IRequest $request,
+		IProfiler $profiler,
+		IInitialState $initialState,
+		IURLGenerator $urlGenerator
+	) {
 		parent::__construct($appName, $request);
 		$this->profiler = $profiler;
 		$this->initialState = $initialState;
+		$this->urlGenerator = $urlGenerator;
 	}
 
 	/**
@@ -32,7 +42,10 @@ class MainController extends Controller {
 	public function index(): RedirectResponse {
 		$profiles = $this->profiler->find(null, 1, null, null, null);
 
-		return new RedirectResponse('/index.php/apps/profiler/profiler/db/' . $profiles['token'] ?? 'empty');
+		return new RedirectResponse($this->urlGenerator->linkToRoute('profiler.main.profiler', [
+			'profiler' => 'db',
+			'token' => $profiles['token'] ?? 'empty'
+		]));
 	}
 
 	/**
