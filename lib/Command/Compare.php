@@ -177,17 +177,20 @@ class Compare extends Base {
 		}
 	}
 
-	function filePrefix(array $backtrace): string {
-		$files = array_map(function (array $item) {
-			return $item['file'] ?? '';
-		}, $backtrace);
+	public function filePrefix(array $backtrace): string {
+		$files = array_map(fn (array $item) => ($item['file'] ?? ''), $backtrace);
 		if (count($files) < 2) {
 			return $files[0] ?? '';
 		}
 		$i = 0;
-		while (isset($files[0][$i]) && array_reduce($files, function ($every, $item) use ($files, $i) {
-				return $every && $item[$i] == $files[0][$i];
-			}, true)) {
+		while (
+			isset($files[0][$i]) &&
+			array_reduce(
+				$files,
+				fn ($every, $item) => ($every && $item[$i] == $files[0][$i]),
+				true
+			)
+		) {
 			$i++;
 		}
 		return substr($files[0], 0, $i);
