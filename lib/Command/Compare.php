@@ -10,6 +10,7 @@ namespace OCA\Profiler\Command;
 use OC\Core\Command\Base;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Compare extends Base {
@@ -18,10 +19,12 @@ class Compare extends Base {
 			->setName('profiler:compare')
 			->setDescription('Compare two exported profiles')
 			->addArgument('first', InputArgument::REQUIRED, 'First profile to compare')
-			->addArgument('second', InputArgument::REQUIRED, 'Second profile to compare');
+			->addArgument('second', InputArgument::REQUIRED, 'Second profile to compare')
+			->addOption('backtrace', 'b', InputOption::VALUE_NONE, 'Show backtraces for added queries');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$backtrace = $input->getOption('backtrace');
 		$from = json_decode(file_get_contents($input->getArgument('first')), true);
 		$to = json_decode(file_get_contents($input->getArgument('second')), true);
 		$fromQuery = array_sum(array_map(function (array $profile): int {
@@ -44,7 +47,7 @@ class Compare extends Base {
 		$diff = $this->diff($from, $to);
 		foreach ($diff as $item) {
 			if (isset($item['from']) && isset($item['to'])) {
-				$this->compareSingle($output, $item['from'], $item['to']);
+				$this->compareSingle($output, $item['from'], $item['to'], $backtrace);
 			} elseif (isset($item['added'])) {
 				$this->outputAdded($output, $item['added']);
 			} elseif (isset($item['removed'])) {
@@ -135,14 +138,10 @@ class Compare extends Base {
 		return $result;
 	}
 
-	private function compareSingle(OutputInterface $output, array $from, array $to) {
+	private function compareSingle(OutputInterface $output, array $from, array $to, bool $backtrace) {
 		$url = $from['url'];
-		$fromQueries = array_map(function (array $query) {
-			return $query['sql'];
-		}, $from['collectors']['db']['queries']);
-		$toQueries = array_map(function (array $query) {
-			return $query['sql'];
-		}, $to['collectors']['db']['queries']);
+		$fromQueries = $from['collectors']['db']['queries'];
+		$toQueries = $to['collectors']['db']['queries'];
 
 		if (count($fromQueries) < count($toQueries)) {
 			$diff = count($toQueries) - count($fromQueries);
@@ -156,29 +155,71 @@ class Compare extends Base {
 
 		[$added, $removed] = $this->diffQueries($fromQueries, $toQueries);
 		foreach ($removed as $query) {
-			$output->writeln("<error>  - $query</error>");
+			$output->writeln("<error>  - " . $query['sql'] . "</error>");
 		}
 		foreach ($added as $query) {
-			$output->writeln("<info>  + $query</info>");
+			$output->writeln("<info>  + " . $query['sql'] . "</info>");
+			if ($backtrace) {
+				$prefixLength = strlen($this->filePrefix($query['backtrace']));
+				$backtrace = array_map(function ($trace) use ($prefixLength) {
+					return [
+						'line' => $trace['file'] ? (substr($trace['file'], $prefixLength) . ' ' . $trace['line']) : '--',
+						'call' => $trace['class'] ? ($trace['class'] . $trace['type'] . $trace['function']) : $trace['function'],
+					];
+				}, $query['backtrace']);
+				$callLength = max(array_map(function ($item) {
+					return strlen($item['call']);
+				}, $backtrace));
+				foreach ($backtrace as $trace) {
+					$output->writeln("      " . str_pad($trace['call'], $callLength) . ' - ' . $trace['line']);
+				}
+			}
 		}
+	}
+
+	public function filePrefix(array $backtrace): string {
+		$files = array_map(fn (array $item) => ($item['file'] ?? ''), $backtrace);
+		if (count($files) < 2) {
+			return $files[0] ?? '';
+		}
+		$i = 0;
+		while (
+			isset($files[0][$i]) &&
+			array_reduce(
+				$files,
+				fn ($every, $item) => ($every && $item[$i] == $files[0][$i]),
+				true
+			)
+		) {
+			$i++;
+		}
+		return substr($files[0], 0, $i);
 	}
 
 	private function diffQueries(array $from, array $to): array {
 		// like array_diff, but only removing a single from each for each match
 
 		$added = $to;
+		$addedQueries = array_map(function (array $item) {
+			return $item['sql'];
+		}, $to);
 		foreach ($from as $query) {
-			$index = array_search($query, $added, true);
+			$index = array_search($query['sql'], $addedQueries, true);
 			if ($index !== false) {
 				unset($added[$index]);
+				unset($addedQueries[$index]);
 			}
 		}
 
 		$removed = $from;
+		$removedQueries = array_map(function (array $item) {
+			return $item['sql'];
+		}, $from);
 		foreach ($to as $query) {
-			$index = array_search($query, $removed, true);
+			$index = array_search($query['sql'], $removedQueries, true);
 			if ($index !== false) {
 				unset($removed[$index]);
+				unset($removedQueries[$index]);
 			}
 		}
 
