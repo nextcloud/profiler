@@ -12,10 +12,17 @@ export default new Store({
 	state: {
 		profiles: {},
 		stackElements: [],
+		importedProfiles: [],
 	},
 	mutations: {
 		addProfile(state, { token, profile }) {
 			Vue.set(state.profiles, token, profile)
+		},
+		addImportedProfiles(state, { profiles }) {
+			for (const profile of profiles) {
+				state.importedProfiles.push(profile)
+				Vue.set(state.profiles, profile.token, profile)
+			}
 		},
 		addStackElement(state, stackElement) {
 			state.stackElements.push(stackElement)
@@ -36,5 +43,27 @@ export default new Store({
 					commit('addProfile', { token, profile: response.data.profile })
 				})
 		},
+		importProfile({ commit, state }, { file }) {
+			readFile(file).then(content => commit('addImportedProfiles', { profiles: JSON.parse(content) }))
+		},
 	},
 })
+
+/**
+ * Read a file to string
+ *
+ * @param file
+ * @return Promise<string>
+ */
+function readFile(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader()
+		reader.readAsText(file, 'UTF-8')
+		reader.onload = function(evt) {
+			resolve(evt.target.result)
+		}
+		reader.onerror = function(evt) {
+			reject(new Error('error reading file'))
+		}
+	})
+}
