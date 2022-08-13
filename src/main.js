@@ -5,8 +5,8 @@ import Vue from 'vue'
 import App from './views/Profiler.vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import router from './router/router'
-import store from './store'
+import router from './router/router.js'
+import store from './store.js'
 
 // bind to window
 Vue.prototype.OC = OC

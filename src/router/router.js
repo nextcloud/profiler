@@ -4,12 +4,12 @@
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import DatabaseProfilerView from '../views/DatabaseProfilerView'
-import LoadingView from '../views/LoadingView'
-import RequestView from '../views/RequestView'
-import LdapView from '../views/LdapView'
-import CacheView from '../views/CacheView'
-import EventsView from '../views/EventsView'
+import DatabaseProfilerView from '../views/DatabaseProfilerView.vue'
+import LoadingView from '../views/LoadingView.vue'
+import RequestView from '../views/RequestView.vue'
+import LdapView from '../views/LdapView.vu'
+import CacheView from '../views/CacheView.vue'
+import EventsView from '../views/EventsView.vue'
 import { getRootUrl, generateUrl } from '@nextcloud/router'
 
 Vue.use(VueRouter)
