@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				@click="openProfiler('db')">
 				{{ stackElements.length }} XHR requests
 				<div class="info"
-					style="width: 500px; max-height: 600px; overflow-x: scroll">
+					style="width: 500px; max-height: 600px; overflow: scroll">
 					<div v-for="(stackElement, index) in stackElements"
 						:key="index">
 						<a :href="generateAjaxUrl(stackElement)">
