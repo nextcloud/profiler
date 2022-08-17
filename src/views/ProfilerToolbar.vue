@@ -112,19 +112,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<div v-if="open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
-				:class="{open: xhrOpen, closed: !xhrOpen}"
+				:class="{open: xhrOpen, closed: !xhrOpen, hasError: stackElementHasError}"
 				@click="xhrOpen = !xhrOpen">
 				<ChevronUp v-if="xhrOpen" class="mr-3" :size="18" />
-				<ChevronDown v-else="xhrOpen" class="mr-3" :size="18" />
+				<ChevronDown v-else class="mr-3" :size="18" />
 				{{ stackElements.length }} XHR requests
 				<table class="info"
-					style="max-width: 700px; max-height: 600px; overflow: scroll;">
+					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
 					<tr v-for="(stackElement, index) in stackElements"
 						:key="index"
 						style="cursor: pointer">
-						<td>
+						<td class="mr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ stackElement.method }}
+							</a>
+						</td>
+						<td class="mr-3">
+							<a :href="generateAjaxUrl(stackElement)" :class="{error: stackElement.error }">
+								{{ stackElement.statusCode }}
 							</a>
 						</td>
 						<td>
@@ -132,7 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 								{{ simplifiedUrl(stackElement.url) }}
 							</a>
 						</td>
-						<td>
+						<td class="mr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ (stackElement.duration).toFixed() }} ms
 							</a>
@@ -248,6 +253,12 @@ export default {
 			}
 			return new Date(this.profile.time * 1000).toUTCString()
 		},
+		stackElementHasError() {
+			if (this.stackElements === null) {
+				return false
+			}
+			return this.stackElements.some(stackElement => stackElement.error)
+		},
 		...mapState(['profiles', 'stackElements']),
 	},
 	mounted() {
@@ -259,7 +270,7 @@ export default {
 		},
 		simplifiedUrl(url) {
 			if (url.startsWith('http')) {
-				let newUrl =  new URL(url)
+				const newUrl = new URL(url)
 				return newUrl.pathname + newUrl.search
 			} else {
 				return url
@@ -354,6 +365,10 @@ export default {
 		justify-content: center;
 		color: white;
 
+		&.hasError {
+			background-color: red;
+		}
+
 		.info {
 			background-color: #444;
 			bottom: 36px;
@@ -364,6 +379,9 @@ export default {
 
 			a {
 				color: #F5F5F5;
+			}
+			.error {
+				color: red;
 			}
 		}
 	}
