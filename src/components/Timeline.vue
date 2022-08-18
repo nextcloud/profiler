@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import TimelineNode from './TimelineNode'
+import TimelineNode from './TimelineNode.vue'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
 
