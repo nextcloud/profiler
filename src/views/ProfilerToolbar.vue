@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('db')">
+				<Database :size="18" class="mr-3" />
 				{{ queriesNumber }} in {{ queriesTime }} ms
 				<div class="info" style="width: 225px">
 					<div><b>Number of queries:</b> {{ queriesNumber }}</div>
@@ -80,6 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('ldap')">
+				<Account :size="18" class="mr-3" />
 				{{ profile.collectors.ldap.length }} LDAP request
 				<div v-if="profile.collectors.ldap.length > 0"
 					class="info"
@@ -96,6 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('cache')">
+				<Server :size="18" class="mr-3" />
 				{{ cacheHits }} / {{ cacheTotal }} cache hits
 				<div class="info"
 					style="width: 200px; max-height: 600px; overflow-x: scroll">
@@ -109,21 +112,43 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<div v-if="open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
-				@click="openProfiler('db')">
+				:class="{open: xhrOpen, closed: !xhrOpen, hasError: stackElementHasError}"
+				@click="xhrOpen = !xhrOpen">
+				<ChevronUp v-if="xhrOpen" class="mr-3" :size="18" />
+				<ChevronDown v-else class="mr-3" :size="18" />
 				{{ stackElements.length }} XHR requests
-				<div class="info"
-					style="width: 500px; max-height: 600px; overflow-x: scroll">
-					<div v-for="(stackElement, index) in stackElements"
-						:key="index">
-						<a :href="generateAjaxUrl(stackElement)">
-							{{ stackElement.url }}
-							in {{ (stackElement.duration).toFixed() }} ms
-							<span class="lighter">({{
-								stackElement.profile
-							}})</span>
-						</a>
-					</div>
-				</div>
+				<table class="info"
+					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
+					<tr v-for="(stackElement, index) in stackElements"
+						:key="index"
+						style="cursor: pointer">
+						<td class="mr-3">
+							<a :href="generateAjaxUrl(stackElement)">
+								{{ stackElement.method }}
+							</a>
+						</td>
+						<td class="mr-3">
+							<a :href="generateAjaxUrl(stackElement)" :class="{error: stackElement.error }">
+								{{ stackElement.statusCode }}
+							</a>
+						</td>
+						<td>
+							<a :href="generateAjaxUrl(stackElement)">
+								{{ simplifiedUrl(stackElement.url) }}
+							</a>
+						</td>
+						<td class="mr-3">
+							<a :href="generateAjaxUrl(stackElement)">
+								{{ (stackElement.duration).toFixed() }} ms
+							</a>
+						</td>
+						<td class="lighter">
+							<a :href="generateAjaxUrl(stackElement)">
+								{{ stackElement.profile }}
+							</a>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div class="toggle-button toolbar-block text-v-center px-3"
 				@click="open = !open">
@@ -137,15 +162,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { loadState } from '@nextcloud/initial-state'
 import { mapState } from 'vuex'
 import { generateUrl } from '@nextcloud/router'
+import Database from 'vue-material-design-icons/Database'
+import Account from 'vue-material-design-icons/Account'
+import ChevronDown from 'vue-material-design-icons/ChevronDown'
+import ChevronUp from 'vue-material-design-icons/ChevronUp'
+import Server from 'vue-material-design-icons/Server'
 
 const token = loadState('profiler', 'request-token')
 
 export default {
 	name: 'ProfilerToolbar',
+	components: {
+		Database,
+		Account,
+		ChevronDown,
+		ChevronUp,
+		Server,
+	},
 	data() {
 		return {
 			token,
 			open: true,
+			xhrOpen: false,
 		}
 	},
 	computed: {
@@ -215,6 +253,12 @@ export default {
 			}
 			return new Date(this.profile.time * 1000).toUTCString()
 		},
+		stackElementHasError() {
+			if (this.stackElements === null) {
+				return false
+			}
+			return this.stackElements.some(stackElement => stackElement.error)
+		},
 		...mapState(['profiles', 'stackElements']),
 	},
 	mounted() {
@@ -223,6 +267,14 @@ export default {
 	methods: {
 		displayDuration(time) {
 			return (time * 1000.0).toFixed(2)
+		},
+		simplifiedUrl(url) {
+			if (url.startsWith('http')) {
+				const newUrl = new URL(url)
+				return newUrl.pathname + newUrl.search
+			} else {
+				return url
+			}
 		},
 		generateAjaxUrl(stackElement) {
 			return generateUrl('/apps/profiler/profiler/db/{token}', {
@@ -276,6 +328,10 @@ export default {
 		padding-left: 1rem !important;
 	}
 
+	.mr-3 {
+		margin-right: 0.5rem !important;
+	}
+
 	.lighter {
 		color: #ddd;
 	}
@@ -288,7 +344,7 @@ export default {
 		justify-content: center;
 	}
 
-	.toolbar-block:hover {
+	.toolbar-block:hover:not(.closed), .toolbar-block.open {
 		position: relative;
 		background-color: #444;
 		border-radius: 0;
@@ -309,6 +365,10 @@ export default {
 		justify-content: center;
 		color: white;
 
+		&.hasError {
+			background-color: red;
+		}
+
 		.info {
 			background-color: #444;
 			bottom: 36px;
@@ -319,6 +379,9 @@ export default {
 
 			a {
 				color: #F5F5F5;
+			}
+			.error {
+				color: red;
 			}
 		}
 	}

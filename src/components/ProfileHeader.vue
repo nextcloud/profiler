@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<div><b>HTTP Status:</b> {{ profile.statusCode }} </div>
 			<div><b>Profiled on:</b> {{ time }} </div>
 			<div><b>Token:</b> {{ profile.token }}</div>
+			<div><b>DB query:</b> {{ queriesNumber }}</div>
 		</div>
 	</header>
 </template>
@@ -44,6 +45,9 @@ export default {
 				return ''
 			}
 			return new Date(this.profile.time * 1000).toUTCString()
+		},
+		queriesNumber() {
+			return Object.values(this.profile.collectors.db.queries).length
 		},
 		...mapState(['profiles']),
 	},
