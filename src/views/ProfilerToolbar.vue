@@ -162,11 +162,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { loadState } from '@nextcloud/initial-state'
 import { mapState } from 'vuex'
 import { generateUrl } from '@nextcloud/router'
-import Database from 'vue-material-design-icons/Database'
-import Account from 'vue-material-design-icons/Account'
-import ChevronDown from 'vue-material-design-icons/ChevronDown'
-import ChevronUp from 'vue-material-design-icons/ChevronUp'
-import Server from 'vue-material-design-icons/Server'
+import Database from 'vue-material-design-icons/Database.vue'
+import Account from 'vue-material-design-icons/Account.vue'
+import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
+import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
+import Server from 'vue-material-design-icons/Server.vue'
 
 const token = loadState('profiler', 'request-token')
 

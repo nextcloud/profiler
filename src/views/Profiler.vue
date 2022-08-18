@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <script>
 import { loadState } from '@nextcloud/initial-state'
 import { AppNavigation, AppContent, AppNavigationCaption, Multiselect } from '@nextcloud/vue'
-import ProfileHeader from '../components/ProfileHeader'
+import ProfileHeader from '../components/ProfileHeader.vue'
 import { mapState } from 'vuex'
 
 const token = loadState('profiler', 'token')

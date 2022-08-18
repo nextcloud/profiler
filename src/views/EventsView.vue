@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { mapState } from 'vuex'
-import Timeline from '../components/Timeline'
+import Timeline from '../components/Timeline.vue'
 
 export default {
 	name: 'EventsView',

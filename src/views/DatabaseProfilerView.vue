@@ -50,8 +50,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import QueryExplanation from '../components/QueryExplanation'
-import Backtrace from '../components/Backtrace'
+import QueryExplanation from '../components/QueryExplanation.vue'
+import Backtrace from '../components/Backtrace.vue'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 

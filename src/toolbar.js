@@ -4,7 +4,7 @@
 import Vue from 'vue'
 import App from './views/ProfilerToolbar.vue'
 import Vuex from 'vuex'
-import store from './store'
+import store from './store.js'
 
 // bind to window
 Vue.prototype.OC = OC
