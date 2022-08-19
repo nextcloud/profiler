@@ -1,4 +1,5 @@
 {
+
 	"name": "profiler",
 	"description": "Built-in profiler for Nextcloud",
 	"version": "0.1.0",
@@ -57,10 +58,10 @@
 	"browserslist": [
 		"extends @nextcloud/browserslist-config"
 	],
-	"engines": {
-		"node": "^14.0.0",
-		"npm": "^7.0.0"
-	},
+  "engines": {
+    "node": "^16.0.0",
+    "npm": "^7.0.0 || ^8.0.0"
+  },
 	"devDependencies": {
 		"@babel/plugin-proposal-class-properties": "^7.18.6",
 		"@cypress/browserify-preprocessor": "^3.0.2",
