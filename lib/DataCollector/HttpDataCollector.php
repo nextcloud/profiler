@@ -17,14 +17,19 @@ class HttpDataCollector extends AbstractDataCollector {
 	}
 
 	public function collect(Request $request, Response $response, \Throwable $exception = null): void {
+		try {
+			$content = $request->getParams();
+		} catch (\THrowable $ex) {
+			$content = null;
+		}
 		$this->data = [
 			'request' => [
 				'url' => $request->getRequestUri(),
 				'method' => $request->getMethod(),
-				'content' => $request->getParams(),
+				'content' => $content,
 				'httpProtocol' => $request->getHttpProtocol(),
 				'userAgent' => $_SERVER['HTTP_USER_AGENT'],
-				'params' => $request->getParams(),
+				'params' => $content,
 			],
 			'response' => [
 				'headers' => $response->getHeaders(),
