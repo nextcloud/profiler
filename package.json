@@ -52,7 +52,7 @@
 		"vue": "^2.7.8",
 		"vue-material-design-icons": "^5.1.2",
 		"vue-router": "^3.5.4",
-		"vue-slider-component": "^3.2.15",
+		"vue-slider-component": "^3.2.20",
 		"vuex": "^3.6.2"
 	},
 	"browserslist": [
