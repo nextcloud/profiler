@@ -1,5 +1,4 @@
 {
-
 	"name": "profiler",
 	"description": "Built-in profiler for Nextcloud",
 	"version": "0.1.0",
@@ -44,24 +43,25 @@
 		"@nextcloud/logger": "^2.3.0",
 		"@nextcloud/paths": "^2.1.0",
 		"@nextcloud/router": "^2.0.0",
-		"@nextcloud/vue": "^5.4.0",
+		"@nextcloud/vue": "^7.0.0-beta.2",
 		"@skjnldsv/vue-plyr": "^7.3.0",
 		"camelcase": "^7.0.0",
 		"nextcloud-server": "^0.15.10",
 		"path-parse": "^1.0.7",
-		"vue": "^2.7.8",
+		"vue": "^2.7.10",
 		"vue-material-design-icons": "^5.1.2",
 		"vue-router": "^3.6.4",
 		"vue-slider-component": "^3.2.20",
+		"vue-template-compiler": "^2.7.10",
 		"vuex": "^3.6.2"
 	},
 	"browserslist": [
 		"extends @nextcloud/browserslist-config"
 	],
-  "engines": {
-    "node": "^16.0.0",
-    "npm": "^7.0.0 || ^8.0.0"
-  },
+	"engines": {
+		"node": "^16.0.0",
+		"npm": "^7.0.0 || ^8.0.0"
+	},
 	"devDependencies": {
 		"@babel/plugin-proposal-class-properties": "^7.18.6",
 		"@cypress/browserify-preprocessor": "^3.0.2",

@@ -6,44 +6,44 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
 	<div id="profiler" class="content">
-		<AppNavigation>
+		<NcAppNavigation>
 			<template #list>
-				<AppNavigationCaption title="Categories" />
-				<li v-for="cat in categoryInfo"
-					:key="cat.id">
-					<router-link class="app-navigation-entry-link"
-						:to="{ name: cat.id, params: {token: token} }">
-						<span :title="cat.name" class="app-navigation-entry__title">
-							{{ cat.name }}
-						</span>
-					</router-link>
-				</li>
+				<NcAppNavigationCaption title="Categories" />
+				<NcAppNavigationItem v-for="cat in categoryInfo"
+					:to="{ name: cat.id, params: {token: token} }"
+					:key="cat.id"
+					:title="cat.name">
+				</NcAppNavigationItem>
 
-				<AppNavigationCaption title="Requests" />
+				<NcAppNavigationCaption title="Requests" />
 				<div class="select-container">
-					<Multiselect v-model="selectedProfile"
+					<NcMultiselect v-model="selectedProfile"
 						:options="recentProfiles.concat(importedProfiles)"
 						class="select"
 						label="url"
 						track-by="token" />
 				</div>
 
-				<AppNavigationCaption title="Import requests" />
+				<NcAppNavigationCaption title="Import requests" />
 				<input type="file" multiple @change="importFiles">
 			</template>
-		</AppNavigation>
-		<AppContent>
+		</NcAppNavigation>
+		<NcAppContent>
 			<ProfileHeader />
 			<div class="router-wrapper">
 				<router-view />
 			</div>
-		</AppContent>
+		</NcAppContent>
 	</div>
 </template>
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import { AppNavigation, AppContent, AppNavigationCaption, Multiselect } from '@nextcloud/vue'
+import NcAppNavigationCaption from '@nextcloud/vue/dist/Components/NcAppNavigationCaption.js'
+import NcAppNavigation from '@nextcloud/vue/dist/Components/NcAppNavigation.js'
+import NcAppNavigationItem from '@nextcloud/vue/dist/Components/NcAppNavigationItem.js'
+import NcMultiselect from '@nextcloud/vue/dist/Components/NcMultiselect.js'
+import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
 import ProfileHeader from '../components/ProfileHeader.vue'
 import { mapState } from 'vuex'
 
@@ -53,11 +53,12 @@ const recentProfiles = loadState('profiler', 'recentProfiles')
 export default {
 	name: 'Profiler',
 	components: {
-		AppNavigation,
-		AppContent,
-		AppNavigationCaption,
+		NcAppNavigation,
+		NcAppNavigationItem,
+		NcAppContent,
+		NcAppNavigationCaption,
 		ProfileHeader,
-		Multiselect,
+		NcMultiselect,
 	},
 	beforeRouteUpdate(to, from, next) {
 		next(vm => {
@@ -141,22 +142,4 @@ export default {
 	padding: 2rem;
 }
 
-.app-navigation-entry-link {
-	background-size: 16px 16px;
-	background-position: 14px center;
-	background-repeat: no-repeat;
-	display: block;
-	justify-content: space-between;
-	line-height: 44px;
-	min-height: 44px;
-	padding: 0 12px 0 14px;
-	overflow: hidden;
-	box-sizing: border-box;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	color: var(--color-main-text);
-	opacity: 0.8;
-	flex: 1 1 0;
-	z-index: 100;
-}
 </style>
