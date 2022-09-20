@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Clear extends Base {
-	private IProfiler $profiler;
+	private $profiler;
 
 	public function __construct(IProfiler $profiler) {
 		parent::__construct();

@@ -22,7 +22,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Util;
 
-class Application extends App implements IBootstrap {
+class Application extends App {
 
 	/** @var string */
 	public const APP_ID = 'profiler';
@@ -31,19 +31,20 @@ class Application extends App implements IBootstrap {
 		parent::__construct(self::APP_ID);
 	}
 
-	public function register(IRegistrationContext $context): void {
+	public function register(): void {
 	}
 
-	public function boot(IBootContext $context): void {
-		$server = $context->getServerContainer();
+	public function boot(): void {
+		$server = $this->getContainer()->getServer();
 
 		/** @var IProfiler $profiler */
-		$profiler = $server->get(IProfiler::class);
+		$profiler = $server->query(IProfiler::class);
 		$profiler->add(new HttpDataCollector());
-		$profiler->add(new EventLoggerDataProvider($server->get(IEventLogger::class)));
+		$profiler->add(new EventLoggerDataProvider($server->query(IEventLogger::class)));
 		$profiler->add(new MemoryDataCollector());
 
 		$context->injectFn([$this, 'injectJs']);
+		Util::addScript('profiler', 'profiler-toolbar');
 	}
 
 	public function injectJs(IProfiler $profiler, IRequest $request, IUserSession $userSession, IGroupManager $groupManager, IInitialState $initialState) {

@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Enable extends Command {
-	private IConfig $config;
+	private $config;
 
 	public function __construct(IConfig $config) {
 		parent::__construct();

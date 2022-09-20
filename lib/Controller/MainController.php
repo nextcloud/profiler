@@ -17,11 +17,11 @@ use OCP\IURLGenerator;
 use OCP\Profiler\IProfiler;
 
 class MainController extends Controller {
-	private IProfiler $profiler;
+	private $profiler;
 
-	private IInitialState $initialState;
+	private $initialState;
 
-	private IURLGenerator $urlGenerator;
+	private $urlGenerator;
 
 	public function __construct(
 		string $appName,

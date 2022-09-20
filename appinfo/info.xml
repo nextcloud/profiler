@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	<repository>https://github.com/nextcloud/profiler.git</repository>
 
 	<dependencies>
-		<nextcloud min-version="25" max-version="25"/>
+		<nextcloud min-version="15" max-version="25"/>
 	</dependencies>
 
 	<commands>
@@ -30,6 +30,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 		<command>OCA\Profiler\Command\ListCommand</command>
 		<command>OCA\Profiler\Command\Export</command>
 		<command>OCA\Profiler\Command\Clear</command>
-		<command>OCA\Profiler\Command\Compare</command>
 	</commands>
 </info>
