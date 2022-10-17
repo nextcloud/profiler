@@ -8,6 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	<header v-if="profile" class="top-bar" :class="background">
 		<h2 class="url">
 			{{ profile.url }}
+			<button class="download" title="Export profile" @click="exportProfile">
+				Export
+			</button>
 		</h2>
 		<div>
 			<div><b>Method:</b> {{ profile.method }} </div>
@@ -21,6 +24,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { mapState } from 'vuex'
+
+/**
+ * Download a string as textfile
+ *
+ * @param {string} filename name to save the file as
+ * @param {string} text content to save
+ */
+function download(filename, text) {
+	const blob = new Blob([text], { type: 'text/plain' })
+	const element = window.document.createElement('a')
+	element.href = URL.createObjectURL(blob)
+	element.download = filename
+	element.style.display = 'none'
+	document.body.appendChild(element)
+	element.click()
+	document.body.removeChild(element)
+}
 
 export default {
 	name: 'ProfileHeader',
@@ -51,6 +71,12 @@ export default {
 		},
 		...mapState(['profiles']),
 	},
+	methods: {
+		exportProfile() {
+			const profile = this.profile
+			download(`${this.profile.token}.json`, JSON.stringify([profile]))
+		},
+	},
 }
 </script>
 
@@ -68,6 +94,10 @@ export default {
 		& > div {
 			margin-left: 20px;
 		}
+	}
+
+	button.download {
+		float: right;
 	}
 }
 
