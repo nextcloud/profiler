@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 							</pre>
 							<h4>Parameters:</h4>
 							{{ request.args }}
+							<Backtrace v-if="request.backtrace" :backtrace="request.backtrace" />
 						</td>
 					</tr>
 				</tbody>
@@ -47,9 +48,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import Backtrace from '../components/Backtrace.vue'
 
 export default {
 	name: 'LdapView',
+	components: {
+		Backtrace,
+	},
 	computed: {
 		ldap() {
 			return this.profiles[this.$route.params.token]?.collectors.ldap
