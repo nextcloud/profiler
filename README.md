@@ -6,9 +6,11 @@ Don't use in a production system.
 
 ## How to use (short introduction)
 
+1. Clone the app and checkout the relevant `stableX` branch.
+1. Build the JavaScript with `npm i && npm run build`
 1. Enable the app `occ app:enable profiler`
-2. Enable profiling by running `occ profiler:enable`
-3. Open nextcloud with an admin account, you should see the profiler toolbar
+1. Enable profiling by running `occ profiler:enable`
+1. Open nextcloud with an admin account, you should see the profiler toolbar
 
 ## How to use (long introduction)
 
