@@ -2124,11 +2124,15 @@ async function occ(command) {
 	return await cmd(`./occ ${command}`)
 }
 
-async function ensureApp() {
+async function ensureApp(profilerBranch) {
 	let {stdout} = await occ('app:list');
 	if (!stdout.includes('profiler')) {
 		console.log('installing profiler')
-		await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
+		if (profilerBranch) {
+			await cmd(`git clone -b ` + profilerBranch + ` https://github.com/nextcloud/profiler apps/profiler`)
+		} else {
+			await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
+		}
 		await occ(`app:enable --force profiler`)
 		let {code, stdout} = await occ(`profiler:enable`);
 		if (code !== 0) {
@@ -2138,8 +2142,8 @@ async function ensureApp() {
 	}
 }
 
-async function run (command, output, compare) {
-	await ensureApp()
+async function run (command, output, compare, profilerBranch) {
+	await ensureApp(profilerBranch)
 
 	// warmup
 	await cmd(command)
@@ -2174,7 +2178,7 @@ async function run (command, output, compare) {
 	}
 }
 
-run(core.getInput('run'), core.getInput('output'), core.getInput('compare-with'))
+run(core.getInput('run'), core.getInput('output'), core.getInput('compare-with'), core.getInput('profiler-branch'))
 	.catch(error => core.setFailed(error.message))
 
 })();
