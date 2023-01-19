@@ -18,7 +18,7 @@ function cmd(command) {
 			stdout = stdout + data
 		})
 		cmd.stderr.on('data', (data) => {
-			console.error(data);
+			console.error(data.toString('utf8'));
 		})
 
 		cmd.on('error', error => {
@@ -38,11 +38,15 @@ async function occ(command) {
 	return await cmd(`./occ ${command}`)
 }
 
-async function ensureApp() {
+async function ensureApp(profilerBranch) {
 	let {stdout} = await occ('app:list');
 	if (!stdout.includes('profiler')) {
 		console.log('installing profiler')
-		await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
+		if (profilerBranch) {
+			await cmd(`git clone -b ` + profilerBranch + ` https://github.com/nextcloud/profiler apps/profiler`)
+		} else {
+			await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
+		}
 		await occ(`app:enable --force profiler`)
 		let {code, stdout} = await occ(`profiler:enable`);
 		if (code !== 0) {
@@ -52,8 +56,8 @@ async function ensureApp() {
 	}
 }
 
-async function run (command, output, compare) {
-	await ensureApp()
+async function run (command, output, compare, profilerBranch) {
+	await ensureApp(profilerBranch)
 
 	// warmup
 	await cmd(command)
@@ -65,7 +69,7 @@ async function run (command, output, compare) {
 	console.log('running command')
 	let cmdOut = await cmd(command)
 
-	console.log(cmdOut.stdout);
+	console.log(cmdOut.stdout.toString('utf8'));
 
 
 	if (cmdOut.code !== 0) {
@@ -74,7 +78,7 @@ async function run (command, output, compare) {
 	console.log('processing result')
 
 	let {stdout} = await occ('profiler:list');
-	console.log(stdout);
+	console.log(stdout.toString('utf8'));
 
 	await occ(`profiler:export > ${output}`)
 
@@ -88,5 +92,5 @@ async function run (command, output, compare) {
 	}
 }
 
-run(core.getInput('run'), core.getInput('output'), core.getInput('compare-with'))
+run(core.getInput('run'), core.getInput('output'), core.getInput('compare-with'), core.getInput('profiler-branch'))
 	.catch(error => core.setFailed(error.message))
