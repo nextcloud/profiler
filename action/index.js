@@ -18,7 +18,7 @@ function cmd(command) {
 			stdout = stdout + data
 		})
 		cmd.stderr.on('data', (data) => {
-			console.error(data);
+			console.error(data.toString('utf8'));
 		})
 
 		cmd.on('error', error => {
@@ -69,7 +69,7 @@ async function run (command, output, compare, profilerBranch) {
 	console.log('running command')
 	let cmdOut = await cmd(command)
 
-	console.log(cmdOut.stdout);
+	console.log(cmdOut.stdout.toString('utf8'));
 
 
 	if (cmdOut.code !== 0) {
@@ -78,7 +78,7 @@ async function run (command, output, compare, profilerBranch) {
 	console.log('processing result')
 
 	let {stdout} = await occ('profiler:list');
-	console.log(stdout);
+	console.log(stdout.toString('utf8'));
 
 	await occ(`profiler:export > ${output}`)
 

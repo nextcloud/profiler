@@ -1,0 +1,83 @@
+name: Test action
+
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+            - master
+            - stable*
+
+jobs:
+  performance-testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['8.0']
+
+    name: performance-${{ matrix.php-versions }}
+
+    steps:
+      - name: Checkout server
+        uses: actions/checkout@v2
+        with:
+            repository: nextcloud/server
+            ref: ${{ matrix.server-versions }}
+
+      - name: Checkout submodules
+        shell: bash
+        run: |
+            auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+            git submodule sync --recursive
+            git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+
+      - name: Checkout action
+        uses: actions/checkout@v2
+        with:
+            path: action
+
+      - name: Set up php ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          tools: phpunit
+          extensions: mbstring, fileinfo, intl, sqlite, pdo_sqlite, zip, gd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Nextcloud
+        run: |
+          mkdir data
+          ./occ maintenance:install --verbose --database=sqlite --database-name=nextcloud --database-host=127.0.0.1 --database-user=root --database-pass=rootpassword --admin-user admin --admin-pass password
+
+          php -S localhost:8080 &
+      - name: Apply blueprint
+        uses: icewind1991/blueprint@v0.1.2
+        with:
+          blueprint: tests/blueprints/basic.toml
+      - name: Run first measurements
+        uses: ./action
+        with:
+          run: |
+            curl -s -X PROPFIND -u test:test http://localhost:8080/remote.php/dav/files/test
+            curl -s -u test:test http://localhost:8080/remote.php/dav/files/test/test.txt
+            curl -s -X PROPFIND -u test:test http://localhost:8080/remote.php/dav/files/test/many_files
+            curl -s -u test:test -T README.md http://localhost:8080/remote.php/dav/files/test/new_file.txt
+            curl -s -u test:test -X DELETE http://localhost:8080/remote.php/dav/files/test/new_file.txt
+          output: before.json
+
+      - name: Run second measurements
+        id: compare
+        uses: ./action
+        continue-on-error: true
+        with:
+          run: |
+            curl -s -X PROPFIND -u test:test http://localhost:8080/remote.php/dav/files/test
+            curl -s -u test:test http://localhost:8080/remote.php/dav/files/test/test.txt
+            curl -s -X PROPFIND -u test:test http://localhost:8080/remote.php/dav/files/test/many_files
+            curl -s -u test:test -T README.md http://localhost:8080/remote.php/dav/files/test/new_file.txt
+            curl -s -u test:test -X DELETE http://localhost:8080/remote.php/dav/files/test/new_file.txt
+          output: after.json
+          compare-with: before.json
