@@ -40,7 +40,7 @@ export default {
 			})
 		},
 		childHeight() {
-			return 24 * this.event.childDepth
+			return 25 * this.event.childDepth
 		},
 		duration() {
 			return (this.event.duration * 1000).toFixed(1)
@@ -68,7 +68,8 @@ div.node, div.children {
 }
 
 div.node {
-	background-color: #00000044;
+	background-color: var(--color-loading-light);
+	margin-top: 1px;
 	padding: 0 2px;
 	white-space: nowrap;
 	cursor: pointer;
@@ -78,7 +79,6 @@ div.child {
 	position: absolute;
 	display: inline-block;
 	vertical-align: top;
-	//top: 0;
 	overflow-x: hidden;
 	margin: 0;
 }
