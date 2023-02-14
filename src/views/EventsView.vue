@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div>
 		<h2>Events</h2>
-		<Timeline v-if="events" :events="events" />
+		<Timeline v-if="events.runtime" :events="events" :queries="queries" />
 		<div style="overflow-x:auto;">
 			<table>
 				<thead>
@@ -17,6 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 						</th>
 						<th class="nowrap" style="cursor: pointer;">
 							Time<span />
+						</th>
+						<th class="nowrap">
+							Queries<span />
 						</th>
 						<th style="width: 100%;">
 							Description
@@ -29,8 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 							{{ index }}
 						</td>
 						<td>
-							{{ (event.duration * 1000).toFixed(1) }} ms
-							(Start: {{ (event.start - start) * 1000 }}, End: {{ (event.stop - start) * 1000 }})
+							{{ event.durationMs }} ms
+							(Start: {{ event.startMs }}, End: {{ event.stopMs }})
+						</td>
+						<td>
+							{{ event.queries.length }}
 						</td>
 						<td>
 							{{ event.description }}
@@ -46,6 +52,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { mapState } from 'vuex'
 import Timeline from '../components/Timeline.vue'
 
+const objectMap = (obj, fn) =>
+	Object.fromEntries(
+		Object.entries(obj).map(
+			([k, v], i) => [k, fn(v, k, i)]
+		)
+	)
+
 export default {
 	name: 'EventsView',
 	components: {
@@ -53,7 +66,18 @@ export default {
 	},
 	computed: {
 		events() {
-			return this.profiles[this.$route.params.token]?.collectors.event
+			const start = this.start
+			const queries = Object.values(this.queries)
+			return objectMap(this.profiles[this.$route.params.token]?.collectors.event || {}, event => ({
+				durationMs: (event.duration * 1000).toFixed(1),
+				startMs: ((event.start - start) * 1000).toFixed(1),
+				stopMs: ((event.stop - start) * 1000).toFixed(1),
+				queries: queries.filter(query => (query.start >= event.start && query.start < event.stop)),
+				...event
+			}))
+		},
+		queries() {
+			return this.profiles[this.$route.params.token]?.collectors.db.queries || {}
 		},
 		start() {
 			return this.profiles[this.$route.params.token]?.collectors.event.init?.start

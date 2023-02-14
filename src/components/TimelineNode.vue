@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div class="node-group">
 		<div class="node" :title="`${event.id} - ${event.description} ${duration}ms`" @click="$emit('click', event)">
-			{{ event.id }} - {{ event.description }} {{ duration }}ms
+			{{ event.id }} - {{ event.description }} - {{ duration }}ms - {{ event.queries.length }} queries
 		</div>
 		<div v-if="children.length > 0" class="children" :style="`height: ${childHeight}px`">
 			<div v-for="(event) in children"
