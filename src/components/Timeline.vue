@@ -47,6 +47,10 @@ export default {
 			type: Object,
 			required: true,
 		},
+		queries: {
+			type: Object,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -67,6 +71,7 @@ export default {
 		eventTree() {
 			const runtimeStop = this.events.runtime.stop
 			const events = Object.values(this.events)
+			const queries = Object.values(this.queries)
 			events.forEach(event => {
 				if (!event.stop) {
 					event.stop = runtimeStop
@@ -92,6 +97,7 @@ export default {
 				children: [],
 				childDepth: 0,
 				parents: [],
+				queries,
 			}
 			const stack = [current]
 
@@ -105,6 +111,7 @@ export default {
 					children: [],
 					childDepth: 0,
 					parents: [],
+					queries: queries.filter(query => (query.start >= event.start && query.start < event.stop)),
 				}
 				while (event.stop > current.stop) {
 					current = stack.pop()
