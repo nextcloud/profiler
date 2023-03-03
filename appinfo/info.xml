@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	<name>Profiler</name>
 	<summary>Profiler for nextcloud</summary>
 	<description><![CDATA[Provides a profiler for Nextcloud. Making developing fast apps easier.]]></description>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<licence>agpl</licence>
 	<author>Carl Schwan</author>
 	<namespace>Profiler</namespace>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	<repository>https://github.com/nextcloud/profiler.git</repository>
 
 	<dependencies>
-		<nextcloud min-version="26" max-version="26"/>
+		<nextcloud min-version="27" max-version="27"/>
 	</dependencies>
 
 	<commands>
