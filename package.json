@@ -48,7 +48,7 @@
 		"camelcase": "^7.0.1",
 		"nextcloud-server": "^0.15.10",
 		"path-parse": "^1.0.7",
-		"vue": "^2.7.10",
+		"vue": "^3.2.47",
 		"vue-material-design-icons": "^5.2.0",
 		"vue-router": "^3.6.5",
 		"vue-slider-component": "^3.2.24",
