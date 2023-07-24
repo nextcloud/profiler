@@ -73,7 +73,7 @@ export default {
 				startMs: ((event.start - start) * 1000).toFixed(1),
 				stopMs: ((event.stop - start) * 1000).toFixed(1),
 				queries: queries.filter(query => (query.start >= event.start && query.start < event.stop)),
-				...event
+				...event,
 			}))
 		},
 		queries() {

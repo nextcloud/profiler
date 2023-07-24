@@ -10,10 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<template #list>
 				<NcAppNavigationCaption title="Categories" />
 				<NcAppNavigationItem v-for="cat in categoryInfo"
-					:to="{ name: cat.id, params: {token: token} }"
 					:key="cat.id"
-					:title="cat.name">
-				</NcAppNavigationItem>
+					:to="{ name: cat.id, params: {token: token} }"
+					:title="cat.name" />
 
 				<NcAppNavigationCaption title="Requests" />
 				<div class="select-container">
