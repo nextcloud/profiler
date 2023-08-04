@@ -413,4 +413,9 @@ export default {
 	// overwrite body height for profiler toolbar
 	--body-height: calc(100% - env(safe-area-inset-bottom) - 50px - var(--body-container-margin) - 36px);
 }
+
+.app-sidebar-tab__buttons {
+	// add space for profiler toolbar
+	bottom: calc(var(--body-container-margin) + 36px)!important;
+}
 </style>
