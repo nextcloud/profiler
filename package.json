@@ -34,7 +34,7 @@
 		"wait-on": "wait-on -i 500 -t 300000"
 	},
 	"dependencies": {
-		"@nextcloud/auth": "^2.1.0",
+		"@nextcloud/auth": "^2.2.1",
 		"@nextcloud/axios": "^2.4.0",
 		"@nextcloud/dialogs": "^3.2.0",
 		"@nextcloud/event-bus": "^3.1.0",
