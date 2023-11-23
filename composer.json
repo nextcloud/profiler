@@ -12,13 +12,13 @@
 		"phpunit/phpunit": "^9.5",
 		"nextcloud/coding-standard": "^1.0.0",
 		"vimeo/psalm": "^5.6.0",
-		"nextcloud/ocp": "dev-master"
+		"nextcloud/ocp": "dev-stable28"
 	},
 	"config": {
 		"optimize-autoloader": true,
 		"classmap-authoritative": true,
 		"platform": {
-			"php": "7.4"
+			"php": "8.0.2"
 		}
 	},
 	"scripts": {
