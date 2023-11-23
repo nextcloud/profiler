@@ -1,7 +1,7 @@
 {
 	"name": "profiler",
 	"description": "Built-in profiler for Nextcloud",
-	"version": "0.2.0",
+	"version": "1.5.0",
 	"author": "Carl Schwan <carl@carlschwan.eu>",
 	"contributors": [
 		"Carl Schwan <carl@carlschwan.eu>"
