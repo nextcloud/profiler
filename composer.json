@@ -9,16 +9,16 @@
 	"description": "profiler",
 	"license": "AGPL",
 	"require-dev": {
-		"phpunit/phpunit": "^9.5",
-		"nextcloud/coding-standard": "^1.0.0",
-		"vimeo/psalm": "^5.6.0",
+		"phpunit/phpunit": "^9.6",
+		"nextcloud/coding-standard": "^1.1",
+		"vimeo/psalm": "^5.16",
 		"nextcloud/ocp": "dev-master"
 	},
 	"config": {
 		"optimize-autoloader": true,
 		"classmap-authoritative": true,
 		"platform": {
-			"php": "7.4"
+			"php": "8.0.2"
 		}
 	},
 	"scripts": {

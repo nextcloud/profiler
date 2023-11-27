@@ -10,13 +10,13 @@ use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Exception;
 use OC\DB\DbDataCollector;
-use OCP\Profiler\IProfiler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\IDBConnection;
 use OCP\IRequest;
+use OCP\Profiler\IProfiler;
 use PDO;
 
 class DatabaseProfilerController extends Controller {
