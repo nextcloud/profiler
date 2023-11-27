@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.16.0@2897ba636551a8cb61601cc26f6ccfbba6c36591">
+  <file src="lib/Command/ListCommand.php">
+    <UndefinedDocblockClass>
+      <code>$dbCollector</code>
+      <code>$dbCollector</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Controller/DatabaseProfilerController.php">
+    <UndefinedDocblockClass>
+      <code>$collector</code>
+    </UndefinedDocblockClass>
+    <UndefinedInterfaceMethod>
+      <code>getQueries</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/DataCollector/EventLoggerDataProvider.php">
+    <UndefinedClass>
+      <code>Request</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/DataCollector/HttpDataCollector.php">
+    <UndefinedClass>
+      <code>Request</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/DataCollector/MemoryDataCollector.php">
+    <UndefinedClass>
+      <code>Request</code>
+    </UndefinedClass>
+  </file>
+</files>
