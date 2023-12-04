@@ -7,12 +7,6 @@ declare(strict_types=1);
 
 namespace OCA\Profiler\AppInfo;
 
-use OCP\AppFramework\Services\IInitialState;
-use OCP\Diagnostics\IEventLogger;
-use OCP\IGroupManager;
-use OCP\IRequest;
-use OCP\IUserSession;
-use OCP\Profiler\IProfiler;
 use OCA\Profiler\DataCollector\EventLoggerDataProvider;
 use OCA\Profiler\DataCollector\HttpDataCollector;
 use OCA\Profiler\DataCollector\MemoryDataCollector;
@@ -20,6 +14,12 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\Diagnostics\IEventLogger;
+use OCP\IGroupManager;
+use OCP\IRequest;
+use OCP\IUserSession;
+use OCP\Profiler\IProfiler;
 use OCP\Util;
 
 class Application extends App implements IBootstrap {
