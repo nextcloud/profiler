@@ -16,8 +16,6 @@ if (isTesting) {
 // vue-plyr uses .mjs file
 webpackRules.RULE_JS.test = /\.m?js$/
 webpackRules.RULE_JS.exclude = BabelLoaderExcludeNodeModulesExcept([
-	'@nextcloud/dialogs',
-	'@nextcloud/event-bus',
 	'camelcase',
 	'fast-xml-parser',
 	'hot-patcher',
