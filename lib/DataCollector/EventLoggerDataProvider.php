@@ -19,7 +19,7 @@ class EventLoggerDataProvider extends AbstractDataCollector {
 		$this->eventLogger = $eventLogger;
 	}
 
-	public function collect(Request $request, Response $response, \Throwable $exception = null): void {
+	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		$this->data = [];
 		foreach ($this->eventLogger->getEvents() as $event) {
 			$this->data[$event->getId()] = [

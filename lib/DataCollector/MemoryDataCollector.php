@@ -17,7 +17,7 @@ class MemoryDataCollector extends AbstractDataCollector {
 		return 'memory';
 	}
 
-	public function collect(Request $request, Response $response, \Throwable $exception = null): void {
+	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		$this->data = [
 			'memory' => memory_get_peak_usage(true),
 			'memory_limit' => $this->convertToBytes(ini_get('memory_limit')),
@@ -39,7 +39,7 @@ class MemoryDataCollector extends AbstractDataCollector {
 	 * @return int|float
 	 */
 	private function convertToBytes(string $memoryLimit) {
-		if ('-1' === $memoryLimit) {
+		if ($memoryLimit === '-1') {
 			return -1;
 		}
 
