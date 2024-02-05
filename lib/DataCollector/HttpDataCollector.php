@@ -16,7 +16,7 @@ class HttpDataCollector extends AbstractDataCollector {
 		return 'http';
 	}
 
-	public function collect(Request $request, Response $response, \Throwable $exception = null): void {
+	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		try {
 			$content = $request->getParams();
 		} catch (\THrowable $ex) {
