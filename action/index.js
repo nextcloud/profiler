@@ -9,16 +9,16 @@ const core = require('@actions/core')
 // Default shell invocation used by GitHub Action 'run:'
 const shellArgs = ['--noprofile', '--norc', '-eo', 'pipefail', '-c']
 
-function cmd(command) {
+const cmd = function(command) {
 	return new Promise((resolve, reject) => {
-		let stdout = ""
+		let stdout = ''
 		const cmd = spawn('bash', [...shellArgs, command])
 
 		cmd.stdout.on('data', (data) => {
 			stdout = stdout + data
 		})
 		cmd.stderr.on('data', (data) => {
-			console.error(data.toString('utf8'));
+			console.error(data.toString('utf8'))
 		})
 
 		cmd.on('error', error => {
@@ -27,67 +27,67 @@ function cmd(command) {
 
 		cmd.on('close', code => {
 			resolve({
-				code: code,
+				code,
 				stdout,
 			})
 		})
 	})
 }
 
-async function occ(command) {
+const occ = async function(command) {
 	return await cmd(`./occ ${command}`)
 }
 
-async function ensureApp(profilerBranch) {
-	let {stdout} = await occ('app:list');
+const ensureApp = async function(profilerBranch) {
+	const { stdout } = await occ('app:list')
 	if (!stdout.includes('profiler')) {
 		console.log('installing profiler')
 		if (profilerBranch) {
-			await cmd(`git clone -b ` + profilerBranch + ` https://github.com/nextcloud/profiler apps/profiler`)
+			await cmd('git clone -b ' + profilerBranch + ' https://github.com/nextcloud/profiler apps/profiler')
 		} else {
-			await cmd(`git clone https://github.com/nextcloud/profiler apps/profiler`)
+			await cmd('git clone https://github.com/nextcloud/profiler apps/profiler')
 		}
-		await occ(`app:enable --force profiler`)
-		let {code, stdout} = await occ(`profiler:enable`);
+
+		await occ('app:enable --force profiler')
+		const { code, stdout } = await occ('profiler:enable')
 		if (code !== 0) {
-			console.log(stdout);
-			throw new Error('Failed to enable profiler');
+			console.log(stdout)
+			throw new Error('Failed to enable profiler')
 		}
 	}
 }
 
-async function run (command, output, compare, profilerBranch) {
+const run = async function(command, output, compare, profilerBranch) {
 	await ensureApp(profilerBranch)
 
 	// warmup
 	await cmd(command)
 
 	try {
-		await rm('data/profiler', {recursive: true})
+		await rm('data/__profiler', { recursive: true })
 	} catch (e) {}
 
 	console.log('running command')
-	let cmdOut = await cmd(command)
+	const cmdOut = await cmd(command)
 
-	console.log(cmdOut.stdout.toString('utf8'));
-
+	console.log(cmdOut.stdout.toString('utf8'))
 
 	if (cmdOut.code !== 0) {
 		throw new Error(`Process completed with exit code ${cmdOut.code}.`)
 	}
 	console.log('processing result')
 
-	let {stdout} = await occ('profiler:list');
-	console.log(stdout.toString('utf8'));
+	const { stdout } = await occ('profiler:list')
+	console.log(stdout.toString('utf8'))
 
 	await occ(`profiler:export > ${output}`)
 
 	if (compare) {
-		let {code, stdout} = await occ(`profiler:compare ${compare} ${output}`)
+		const { code, stdout } = await occ(`profiler:compare ${compare} ${output}`)
 		core.setOutput('compare', stdout)
 
 		if (code !== 0) {
-			throw new Error(`Possible performance regression detected`)
+			throw new Error('Possible performance regression detected')
 		}
 	}
 }
