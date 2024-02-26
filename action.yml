@@ -13,6 +13,9 @@ inputs:
     compare-with:
         description: 'exported profile to compare to'
         required: false
+    profiler-branch:
+      description: 'which branch of the profiler app should be used in the test'
+      required: false
 runs:
     using: 'node16'
     main: 'action/dist/index.js'
