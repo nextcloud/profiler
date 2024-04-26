@@ -1,4 +1,10 @@
+<!--
+  - SPDX-FileCopyrightText: 2022-2024 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: CC0-1.0
+-->
 # Profiler
+
+[![REUSE status](https://api.reuse.software/badge/github.com/nextcloud/profiler)](https://api.reuse.software/info/github.com/nextcloud/profiler)
 
 This app provides a profiler to find performance related issues
 
@@ -15,4 +21,3 @@ Don't use in a production system.
 ## How to use (long introduction)
 
 A tutorial page is available in the [developer documentation](https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/profiler.html)
-
