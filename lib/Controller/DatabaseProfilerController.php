@@ -6,8 +6,6 @@
 
 namespace OCA\Profiler\Controller;
 
-use Doctrine\DBAL\Platforms\OraclePlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Exception;
 use OC\DB\DbDataCollector;
 use OCP\AppFramework\Controller;
@@ -48,10 +46,9 @@ class DatabaseProfilerController extends Controller {
 		}
 
 		try {
-			$platform = $this->connection->getDatabasePlatform();
-			if ($platform instanceof SqlitePlatform) {
+			if ($this->connection->getDatabaseProvider() === IDBConnection::PLATFORM_SQLITE) {
 				$results = $this->explainSQLitePlatform($query);
-			} elseif ($platform instanceof OraclePlatform) {
+			} elseif ($this->connection->getDatabaseProvider() === IDBConnection::PLATFORM_ORACLE) {
 				$results = $this->explainOraclePlatform($query);
 			} else {
 				$results = $this->explainOtherPlatform($query);
