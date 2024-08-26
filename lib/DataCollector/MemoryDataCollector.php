@@ -50,7 +50,7 @@ class MemoryDataCollector extends AbstractDataCollector {
 		} elseif (str_starts_with($max, '0')) {
 			$max = \intval($max, 8);
 		} else {
-			$max = (int) $max;
+			$max = (int)$max;
 		}
 
 		switch (substr($memoryLimit, -1)) {

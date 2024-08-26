@@ -32,7 +32,7 @@ class ListCommand extends Base {
 			->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Maximum number of profiles to return')
 			->addOption('url', null, InputOption::VALUE_REQUIRED, 'Url to list profiles for')
 			->addOption('since', null, InputOption::VALUE_REQUIRED, 'Minimum date for listed profiles, as unix timestamp')
-		->addOption('before', null, InputOption::VALUE_REQUIRED, 'Maximum date for listed profiles, as unix timestamp');
+			->addOption('before', null, InputOption::VALUE_REQUIRED, 'Maximum date for listed profiles, as unix timestamp');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {

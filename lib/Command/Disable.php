@@ -28,7 +28,7 @@ class Disable extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->config->setSystemValue('profiler', false);
-		$output->writeln("<info>Note: debug mode has been left enabled</info>");
+		$output->writeln('<info>Note: debug mode has been left enabled</info>');
 		return 0;
 	}
 }
