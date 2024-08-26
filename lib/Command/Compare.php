@@ -155,10 +155,10 @@ class Compare extends Base {
 
 		[$added, $removed] = $this->diffQueries($fromQueries, $toQueries);
 		foreach ($removed as $query) {
-			$output->writeln("<error>  - " . $query['sql'] . "</error>");
+			$output->writeln('<error>  - ' . $query['sql'] . '</error>');
 		}
 		foreach ($added as $query) {
-			$output->writeln("<info>  + " . $query['sql'] . "</info>");
+			$output->writeln('<info>  + ' . $query['sql'] . '</info>');
 			if ($backtrace) {
 				$prefixLength = strlen($this->filePrefix($query['backtrace']));
 				$backtrace = array_map(function ($trace) use ($prefixLength) {
@@ -171,7 +171,7 @@ class Compare extends Base {
 					return strlen($item['call']);
 				}, $backtrace));
 				foreach ($backtrace as $trace) {
-					$output->writeln("      " . str_pad($trace['call'], $callLength) . ' - ' . $trace['line']);
+					$output->writeln('      ' . str_pad($trace['call'], $callLength) . ' - ' . $trace['line']);
 				}
 			}
 		}
