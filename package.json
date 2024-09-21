@@ -34,7 +34,7 @@
 		"wait-on": "wait-on -i 500 -t 300000"
 	},
 	"dependencies": {
-		"@nextcloud/axios": "^2.5.0",
+		"@nextcloud/axios": "^2.5.1",
 		"@nextcloud/initial-state": "^2.2.0",
 		"@nextcloud/l10n": "^3.0.0",
 		"@nextcloud/router": "^3.0.1",
