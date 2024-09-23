@@ -28,7 +28,7 @@ class MainController extends Controller {
 		IRequest $request,
 		IProfiler $profiler,
 		IInitialState $initialState,
-		IURLGenerator $urlGenerator
+		IURLGenerator $urlGenerator,
 	) {
 		parent::__construct($appName, $request);
 		$this->profiler = $profiler;
