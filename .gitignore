@@ -13,4 +13,5 @@ yarn-error.log
 /js
 /.php-cs-fixer.cache
 /vendor
+/vendor-bin/*/vendor
 !/action/dist/index.js

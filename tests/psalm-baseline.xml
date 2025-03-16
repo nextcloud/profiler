@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.16.0@2897ba636551a8cb61601cc26f6ccfbba6c36591">
+<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
   <file src="lib/Command/ListCommand.php">
     <UndefinedDocblockClass>
-      <code>$dbCollector</code>
-      <code>$dbCollector</code>
+      <code><![CDATA[$dbCollector]]></code>
+      <code><![CDATA[$dbCollector]]></code>
     </UndefinedDocblockClass>
   </file>
   <file src="lib/Controller/DatabaseProfilerController.php">
     <UndefinedDocblockClass>
-      <code>$collector</code>
+      <code><![CDATA[$collector]]></code>
     </UndefinedDocblockClass>
     <UndefinedInterfaceMethod>
-      <code>getQueries</code>
+      <code><![CDATA[getQueries]]></code>
     </UndefinedInterfaceMethod>
   </file>
   <file src="lib/DataCollector/EventLoggerDataProvider.php">
     <UndefinedClass>
-      <code>Request</code>
+      <code><![CDATA[Request]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/DataCollector/HttpDataCollector.php">
     <UndefinedClass>
-      <code>Request</code>
+      <code><![CDATA[Request]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/DataCollector/MemoryDataCollector.php">
     <UndefinedClass>
-      <code>Request</code>
+      <code><![CDATA[Request]]></code>
     </UndefinedClass>
   </file>
 </files>
