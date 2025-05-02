@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				</thead>
 				<tbody>
 					<tr v-for="(query, index) in queries" :key="index">
-						<td :id="'occ-' + index">
+						<td :id="'queries-' + index">
 							{{ index }}
 						</td>
 						<td>
@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 									<h4>Unique combination of params:</h4>
 									<div class="detail-see">
 										See {{ similarQueries[index].singles.length }} in :
-										<a v-for="(simIndex, i) in similarQueries[index].singles" :key="i" :href="'#occ-'+simIndex">
+										<a v-for="(simIndex, i) in similarQueries[index].singles" :key="i" :href="anchor(simIndex)">
 											{{ simIndex }}
 										</a>
 									</div>
@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 										<li v-for="(realDuplicate, i) in similarQueries[index].multiples" :key="i">
 											<div class="detail-see">
 												See {{ realDuplicate.count }} use of params "{{ JSON.parse(realDuplicate.params) }}" in :
-												<a v-for="(dupIndex, j) in realDuplicate.indexes" :key="j" :href="'#occ-'+dupIndex">
+												<a v-for="(dupIndex, j) in realDuplicate.indexes" :key="j" :href="anchor(dupIndex)">
 													{{ dupIndex }}
 												</a>
 											</div>
@@ -162,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 								<h4>Occurrences:</h4>
 								<div class="detail-see">
 									See in :
-									<a v-for="(useIndex, i) in tableUsage.indexes" :key="i" :href="'#occ-'+useIndex">
+									<a v-for="(useIndex, i) in tableUsage.indexes" :key="i" :href="anchor(useIndex)">
 										{{ useIndex }}
 									</a>
 								</div>
@@ -324,6 +324,9 @@ export default {
 		openTableUseDetails(index) {
 			this.$set(this.detailTablesQueries, index, {})
 		},
+		anchor(index) {
+			return '#queries-' + index
+		},
 	},
 }
 </script>
@@ -366,6 +369,7 @@ table tbody th, table tbody td {
 tbody tr:hover, tbody tr:focus, tbody tr:active {
 	background-color: inherit;
 }
+
 .sticky-menu {
 	position: sticky;
 	top: 0;
@@ -373,16 +377,20 @@ tbody tr:hover, tbody tr:focus, tbody tr:active {
 	background: var(--color-background-dark);
 	padding: 8px 10px;
 }
+
 .anchor-space {
 	height: 48px;
 }
+
 .menu-label {
 	font-size: 1.2em;
 	font-weight: bold;
 }
+
 .menu-space {
 	margin-left: 20px;
 }
+
 .detail-see {
 	margin-left: 20px;
 	font-size: 0.8em;
