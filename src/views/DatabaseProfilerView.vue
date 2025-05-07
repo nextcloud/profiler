@@ -239,7 +239,7 @@ export default {
 			const tableQueries = []
 			Object.entries(queries).forEach(entry => {
 				const [index, query] = entry
-				const matches = query.sql.matchAll(/(from|join|into|update)\s+["](\w+\.?\w+\s*)["]/gi)
+				const matches = query.sql.matchAll(/(from|join|into|update)\s+["`](\w+\.?\w+\s*)["`]/gi)
 				if (matches === null) {
 					return
 				}
