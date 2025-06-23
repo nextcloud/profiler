@@ -184,8 +184,8 @@ class Compare extends Base {
 		}
 		$i = 0;
 		while (
-			isset($files[0][$i]) &&
-			array_reduce(
+			isset($files[0][$i])
+			&& array_reduce(
 				$files,
 				fn ($every, $item) => ($every && $item[$i] == $files[0][$i]),
 				true
