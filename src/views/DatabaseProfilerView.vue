@@ -5,6 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
 	<div>
+		<div class="sticky-menu">
+			<a href="#db-queries"><span class="menu-label">Database queries: </span>{{ queriesNumber }}</a>
+			<a href="#db-similars" class="menu-space"><span class="menu-label">Similar queries: </span>{{ duplicateQueries.length }}</a>
+			<a href="#db-tables" class="menu-space"><span class="menu-label">Tables used: </span>{{ tableQueries.length }}</a>
+		</div>
+		<div id="db-queries" class="anchor-space" />
 		<h2>Database queries</h2>
 		<div style="overflow-x:auto;">
 			<table>
@@ -17,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 							Time<span />
 						</th>
 						<th style="width: 100%;">
-							Info
+							Query
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(query, index) in queries" :key="index">
-						<td>
+						<td :id="'queries-' + index">
 							{{ index }}
 						</td>
 						<td>
@@ -40,6 +46,127 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 							</button>
 							<QueryExplanation v-else-if="explainedQueries[index]" :explanation="explainedQueries[index] ? explainedQueries[index] : ''" />
 							<Backtrace v-if="query.backtrace" :backtrace="query.backtrace" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="db-similars" class="anchor-space" />
+		<h2>Database similar queries</h2>
+		<div style="overflow-x:auto;">
+			<table>
+				<thead>
+					<tr>
+						<th class="nowrap">
+							#
+						</th>
+						<th class="nowrap">
+							Count
+						</th>
+						<th class="nowrap">
+							Cumulated Time<span />
+						</th>
+						<th style="width: 100%;">
+							Info
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(duplicate, index) in duplicateQueries" :key="'dup-'+index">
+						<td>
+							{{ index }}
+						</td>
+						<td>
+							{{ duplicate.count }}
+						</td>
+						<td>
+							{{ (duplicate.time * 1000).toFixed(1) }} ms
+						</td>
+						<td>
+							<pre>
+{{ duplicate.sql }}
+						</pre>
+							<button v-if="similarQueries[index] === undefined" @click="openSimilarQuery(index)">
+								Detail Similars
+							</button>
+							<template v-else>
+								<template v-if="similarQueries[index].singles.length > 0">
+									<h4>Unique combination of params:</h4>
+									<div class="detail-see">
+										See {{ similarQueries[index].singles.length }} in :
+										<a v-for="(simIndex, i) in similarQueries[index].singles" :key="i" :href="anchor(simIndex)">
+											{{ simIndex }}
+										</a>
+									</div>
+								</template>
+								<template v-if="similarQueries[index].multiples.length > 0">
+									<h4>Duplicates (same parameters):</h4>
+									<ul>
+										<li v-for="(realDuplicate, i) in similarQueries[index].multiples" :key="i">
+											<div class="detail-see">
+												See {{ realDuplicate.count }} use of params "{{ JSON.parse(realDuplicate.params) }}" in :
+												<a v-for="(dupIndex, j) in realDuplicate.indexes" :key="j" :href="anchor(dupIndex)">
+													{{ dupIndex }}
+												</a>
+											</div>
+										</li>
+									</ul>
+								</template>
+							</template>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="db-tables" class="anchor-space" />
+		<h2>Database tables used</h2>
+		<div style="overflow-x:auto;">
+			<table>
+				<thead>
+					<tr>
+						<th class="nowrap">
+							#
+						</th>
+						<th class="nowrap">
+							Count
+						</th>
+						<th class="nowrap">
+							Cumulated Time<span />
+						</th>
+						<th style="width: 100%;">
+							Table
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(tableUsage, index) in tableQueries" :key="'tab-'+index">
+						<td>
+							{{ index }}
+						</td>
+						<td>
+							{{ tableUsage.count }}
+						</td>
+						<td>
+							{{ (tableUsage.time * 1000).toFixed(1) }} ms
+						</td>
+						<td>
+							{{ tableUsage.table }}
+							<button v-if="detailTablesQueries[index] === undefined" @click="openTableUseDetails(index)">
+								Detail Usage
+							</button>
+							<template v-else>
+								<h4>Usage:</h4>
+								<div class="detail-see">
+									{{ tableUse(tableUsage) }}
+								</div>
+								<h4>Occurrences:</h4>
+								<div class="detail-see">
+									See in :
+									<a v-for="(useIndex, i) in tableUsage.indexes" :key="i" :href="anchor(useIndex)">
+										{{ useIndex }}
+									</a>
+								</div>
+							</template>
 						</td>
 					</tr>
 				</tbody>
@@ -64,11 +191,81 @@ export default {
 	data() {
 		return {
 			explainedQueries: {},
+			similarQueries: {},
+			detailTablesQueries: {},
 		}
 	},
 	computed: {
 		queries() {
 			return this.profiles[this.$route.params.token]?.collectors.db.queries
+		},
+		queriesNumber() {
+			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
+			if (queries === undefined) {
+				return 0
+			}
+			return Object.values(queries).length
+		},
+		duplicateQueries() {
+			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
+			if (queries === undefined) {
+				return []
+			}
+			const querySql = []
+			Object.entries(queries).forEach(entry => {
+				const [index, query] = entry
+				if (querySql[query.sql] === undefined) {
+					querySql[query.sql] = {
+						count: 1,
+						time: query.executionMS,
+						indexes: [Number(index)],
+						sql: query.sql,
+					}
+				} else {
+					querySql[query.sql].count++
+					querySql[query.sql].time += query.executionMS
+					querySql[query.sql].indexes.push(Number(index))
+				}
+			})
+			return Object.values(querySql).filter(query => {
+				return query.count > 1
+			}).sort((a, b) => b.time - a.time)
+		},
+		tableQueries() {
+			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
+			if (queries === undefined) {
+				return []
+			}
+			const tableQueries = []
+			Object.entries(queries).forEach(entry => {
+				const [index, query] = entry
+				const matches = query.sql.matchAll(/(from|join|into|update)\s+["`](\w+\.?\w+\s*)["`]/gi)
+				if (matches === null) {
+					return
+				}
+				matches.forEach(match => {
+					const typeFrom = match[1].toLowerCase()
+					const table = match[2]
+					if (tableQueries[table] === undefined) {
+						tableQueries[table] = {
+							count: 1,
+							time: query.executionMS,
+							indexes: [index],
+							types: { from: 0, join: 0, into: 0, update: 0 },
+						}
+					} else {
+						tableQueries[table].count++
+						tableQueries[table].time += query.executionMS
+						tableQueries[table].indexes.push(index)
+					}
+					tableQueries[table].types[typeFrom]++
+				})
+			})
+			return Object.entries(tableQueries).map(entry => {
+				const [table, query] = entry
+				query.table = table
+				return query
+			}).sort((a, b) => b.time - a.time)
 		},
 		...mapGetters(['profile']),
 		...mapState(['profiles']),
@@ -79,6 +276,56 @@ export default {
 				.then((response) => {
 					this.$set(this.explainedQueries, index, response.data)
 				})
+		},
+		tableUse(tableUsage) {
+			const types = []
+			Object.entries(tableUsage.types).forEach(entry => {
+				const [type, count] = entry
+				if (count > 0) {
+					types.push(type + ': ' + count)
+				}
+			})
+			return types.join(', ')
+		},
+		openSimilarQuery(index) {
+			const paramReferences = {}
+			this.duplicateQueries[index].indexes.forEach(indexDuplicate => {
+				const paramStr = JSON.stringify(this.queries[indexDuplicate].params)
+				if (paramReferences[paramStr] === undefined) {
+					paramReferences[paramStr] = {
+						count: 1,
+						indexes: [indexDuplicate],
+					}
+				} else {
+					paramReferences[paramStr].count++
+					paramReferences[paramStr].indexes.push(indexDuplicate)
+				}
+			})
+			const singles = Object.entries(paramReferences).filter(entry => {
+				return entry[1].count === 1
+			}).map(entry => {
+				return entry[1].indexes[0]
+			})
+			const multiples = Object.entries(paramReferences).filter(entry => {
+				return entry[1].count > 1
+			}).map(entry => {
+				const [paramStr, param] = entry
+				return {
+					count: param.count,
+					indexes: param.indexes,
+					params: paramStr,
+				}
+			}).sort((a, b) => b.count - a.count)
+			this.$set(this.similarQueries, index, {
+				singles,
+				multiples,
+			})
+		},
+		openTableUseDetails(index) {
+			this.$set(this.detailTablesQueries, index, {})
+		},
+		anchor(index) {
+			return '#queries-' + index
 		},
 	},
 }
@@ -122,4 +369,31 @@ table tbody th, table tbody td {
 tbody tr:hover, tbody tr:focus, tbody tr:active {
 	background-color: inherit;
 }
+
+.sticky-menu {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background: var(--color-background-dark);
+	padding: 8px 10px;
+}
+
+.anchor-space {
+	height: 48px;
+}
+
+.menu-label {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.menu-space {
+	margin-left: 20px;
+}
+
+.detail-see {
+	margin-left: 20px;
+	font-size: 0.8em;
+}
+
 </style>
