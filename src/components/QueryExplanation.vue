@@ -10,10 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			<table>
 				<thead>
 					<tr>
-						<th v-for="(key, label) in explanation.data[0]" :key="label">
-							<td style="padding: 1rem;">
-								{{ label }}
-							</td>
+						<th v-for="(key, label) in explanation.data[0]" :key="label" style="padding: 1rem;">
+							{{ label }}
 						</th>
 					</tr>
 				</thead>

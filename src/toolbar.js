@@ -1,28 +1,19 @@
 // SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './views/ProfilerToolbar.vue'
-import Vuex from 'vuex'
 import store from './store.js'
 
-// bind to window
-Vue.prototype.OC = OC
-Vue.prototype.t = t
+const app = createApp(App)
 
-Vue.use(Vuex)
-
-const instance = new Vue({
-	el: '#profiler-toolbar',
-	store,
-	render: h => h(App),
-})
+app.use(store)
+app.mount('#profiler-toolbar')
 
 // Hack into the fetch() and XMLHttpRequest to log related http requests
 if (window.fetch && window.fetch.polyfill === undefined) {
 	const oldFetch = window.fetch
 	window.fetch = function() {
-		console.debug('fetch')
 		const promise = oldFetch.apply(this, arguments)
 		let url = arguments[0]
 		let params = arguments[1]
@@ -117,5 +108,3 @@ if (window.XMLHttpRequest && XMLHttpRequest.prototype.addEventListener) {
 		proxied.apply(this, Array.prototype.slice.call(arguments))
 	}
 }
-
-export default instance

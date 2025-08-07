@@ -1,27 +1,26 @@
 // SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
+import { createStore } from 'vuex'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 
-Vue.use(Vuex)
-
-export default new Store({
-	state: {
-		profiles: {},
-		stackElements: [],
-		importedProfiles: [],
+export default createStore({
+	state() {
+		return {
+			profiles: {},
+			stackElements: [],
+			importedProfiles: [],
+		}
 	},
 	mutations: {
 		addProfile(state, { token, profile }) {
-			Vue.set(state.profiles, token, profile)
+			state.profiles[token] = profile
 		},
 		addImportedProfiles(state, { profiles }) {
 			for (const profile of profiles) {
 				state.importedProfiles.push(profile)
-				Vue.set(state.profiles, profile.token, profile)
+				state.profiles[profile.token] = profile
 			}
 		},
 		addStackElement(state, stackElement) {

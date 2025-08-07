@@ -55,6 +55,7 @@ class MainController extends Controller {
 		$profiles = $this->profiler->find(null, 20, null, null, null);
 
 		\OCP\Util::addScript('profiler', 'profiler-main');
+		\OCP\Util::addStyle('profiler', 'profiler-main');
 		$this->initialState->provideInitialState('recentProfiles', $profiles);
 		$this->initialState->provideInitialState('token', $token);
 
