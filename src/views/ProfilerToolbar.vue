@@ -119,9 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				{{ stackElements.length }} XHR requests
 				<table class="info"
 					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
-					<tr v-for="(stackElement, index) in stackElements"
-						:key="index"
-						style="cursor: pointer">
+					<tr v-for="(stackElement, index) in validStackElements" :key="index" style="cursor: pointer">
 						<td class="mr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ stackElement.method }}
@@ -258,6 +256,9 @@ export default {
 				return false
 			}
 			return this.stackElements.some(stackElement => stackElement.error)
+		},
+		validStackElements() {
+			return this.stackElements.filter(stackElement => stackElement.profile)
 		},
 		...mapState(['profiles', 'stackElements']),
 	},
