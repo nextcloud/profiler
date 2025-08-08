@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -17,28 +20,17 @@ use OCP\IURLGenerator;
 use OCP\Profiler\IProfiler;
 
 class MainController extends Controller {
-	private IProfiler $profiler;
-
-	private IInitialState $initialState;
-
-	private IURLGenerator $urlGenerator;
-
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		IProfiler $profiler,
-		IInitialState $initialState,
-		IURLGenerator $urlGenerator,
+		private IProfiler $profiler,
+		private IInitialState $initialState,
+		private IURLGenerator $urlGenerator,
 	) {
 		parent::__construct($appName, $request);
-		$this->profiler = $profiler;
-		$this->initialState = $initialState;
-		$this->urlGenerator = $urlGenerator;
 	}
 
-	/**
-	 * @NoCSRFRequired
-	 */
+	#[NoCSRFRequired]
 	public function index(): RedirectResponse {
 		$profiles = $this->profiler->find(null, 1, null, null, null);
 
@@ -48,9 +40,7 @@ class MainController extends Controller {
 		]));
 	}
 
-	/**
-	 * @NoCSRFRequired
-	 */
+	#[NoCSRFRequired]
 	public function profiler(string $profiler, string $token): TemplateResponse {
 		$profiles = $this->profiler->find(null, 20, null, null, null);
 

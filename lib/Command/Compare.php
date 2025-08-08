@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Command;
 
@@ -14,7 +16,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Compare extends Base {
-	protected function configure() {
+	protected function configure(): void {
+		parent::configure();
 		$this
 			->setName('profiler:compare')
 			->setDescription('Compare two exported profiles')
@@ -34,11 +37,11 @@ class Compare extends Base {
 			return count($profile['collectors']['db']['queries']);
 		}, $to));
 
-		$result = 0;
+		$result = self::SUCCESS;
 		if ($toQuery > $fromQuery) {
 			$diff = $toQuery - $fromQuery;
 			$output->writeln("<error>$diff queries added</error>\n");
-			$result = 1;
+			$result = self::FAILURE;
 		} elseif ($toQuery < $fromQuery) {
 			$diff = $fromQuery - $toQuery;
 			$output->writeln("<info>$diff queries removed</info>\n");
@@ -138,7 +141,7 @@ class Compare extends Base {
 		return $result;
 	}
 
-	private function compareSingle(OutputInterface $output, array $from, array $to, bool $backtrace) {
+	private function compareSingle(OutputInterface $output, array $from, array $to, bool $backtrace): void {
 		$url = $from['url'];
 		$fromQueries = $from['collectors']['db']['queries'];
 		$toQueries = $to['collectors']['db']['queries'];
@@ -226,13 +229,13 @@ class Compare extends Base {
 		return [array_values($added), array_values($removed)];
 	}
 
-	private function outputAdded(OutputInterface $output, array $added) {
+	private function outputAdded(OutputInterface $output, array $added): void {
 		$url = $added['url'];
 		$queries = count($added['collectors']['db']['queries']);
 		$output->writeln("<error>+ $url added with $queries queries</error>");
 	}
 
-	private function outputRemoved(OutputInterface $output, array $removed) {
+	private function outputRemoved(OutputInterface $output, array $removed): void {
 		$url = $removed['url'];
 		$queries = count($removed['collectors']['db']['queries']);
 		$output->writeln("<info>- $url removed with $queries queries</info>");

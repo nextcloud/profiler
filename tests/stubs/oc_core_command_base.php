@@ -25,7 +25,7 @@ namespace OC\Core\Command {
 		protected function configure() {
 		}
 
-		public function setName(string $name) {
+		public function setName(string $name): static {
 		}
 
 		public function getApplication(): ?Application {

@@ -1,8 +1,11 @@
 <?php
 
-// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
+declare(strict_types=1);
+
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Controller;
 
@@ -18,14 +21,13 @@ use OCP\Profiler\IProfiler;
 use PDO;
 
 class DatabaseProfilerController extends Controller {
-	private IProfiler $profiler;
-
-	private IDBConnection $connection;
-
-	public function __construct(string $appName, IRequest $request, IProfiler $profiler, IDBConnection $connection) {
+	public function __construct(
+		string $appName,
+		IRequest $request,
+		private IProfiler $profiler,
+		private IDBConnection $connection,
+	) {
 		parent::__construct($appName, $request);
-		$this->profiler = $profiler;
-		$this->connection = $connection;
 	}
 
 	/**

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Command;
 
@@ -13,14 +15,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Clear extends Base {
-	private IProfiler $profiler;
 
-	public function __construct(IProfiler $profiler) {
+	public function __construct(
+		private IProfiler $profiler,
+	) {
 		parent::__construct();
-		$this->profiler = $profiler;
 	}
 
-	protected function configure() {
+	protected function configure(): void {
+		parent::configure();
 		$this
 			->setName('profiler:clear')
 			->setDescription('Remove all saved profiles');
@@ -29,6 +32,6 @@ class Clear extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->profiler->clear();
 
-		return 0;
+		return self::SUCCESS;
 	}
 }
