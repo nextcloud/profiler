@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Command;
 
@@ -14,14 +16,16 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Export extends Base {
-	private IProfiler $profiler;
 
-	public function __construct(IProfiler $profiler) {
+	public function __construct(
+		private IProfiler $profiler,
+	) {
 		parent::__construct();
-		$this->profiler = $profiler;
 	}
 
-	protected function configure() {
+	#[\Override]
+	protected function configure(): void {
+		parent::configure();
 		$this
 			->setName('profiler:export')
 			->setDescription('Export captured profiles as json')
@@ -31,6 +35,7 @@ class Export extends Base {
 			->addOption('before', null, InputOption::VALUE_REQUIRED, 'Maximum date for listed profiles, as unix timestamp');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$since = $input->getOption('since') ? (int)$input->getOption('since') : null;
 		$before = $input->getOption('before') ? (int)$input->getOption('before') : null;
@@ -45,6 +50,6 @@ class Export extends Base {
 
 		$output->writeln(json_encode($profiles));
 
-		return 0;
+		return self::SUCCESS;
 	}
 }

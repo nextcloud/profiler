@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\AppInfo;
 
@@ -31,9 +33,11 @@ class Application extends App implements IBootstrap {
 		parent::__construct(self::APP_ID);
 	}
 
+	#[\Override]
 	public function register(IRegistrationContext $context): void {
 	}
 
+	#[\Override]
 	public function boot(IBootContext $context): void {
 		$server = $context->getServerContainer();
 

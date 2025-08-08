@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Robin Appelman <robin@icewind.nl>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\Profiler\Command;
 
@@ -13,22 +15,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Disable extends Command {
-	private IConfig $config;
-
-	public function __construct(IConfig $config) {
+	public function __construct(
+		private IConfig $config,
+	) {
 		parent::__construct();
-		$this->config = $config;
 	}
 
-	protected function configure() {
+	#[\Override]
+	protected function configure(): void {
+		parent::configure();
 		$this
 			->setName('profiler:disable')
 			->setDescription('Disable profiling');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->config->setSystemValue('profiler', false);
 		$output->writeln('<info>Note: debug mode has been left enabled</info>');
-		return 0;
+		return self::SUCCESS;
 	}
 }

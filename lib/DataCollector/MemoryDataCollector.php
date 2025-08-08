@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Fabien Potencier <fabien@symfony.com>
-// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
-// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2022 Fabien Potencier <fabien@symfony.com>
+ * SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+ */
 
 namespace OCA\Profiler\DataCollector;
 
@@ -13,10 +15,12 @@ use OCP\AppFramework\Http\Response;
 use OCP\DataCollector\AbstractDataCollector;
 
 class MemoryDataCollector extends AbstractDataCollector {
+	#[\Override]
 	public function getName(): string {
 		return 'memory';
 	}
 
+	#[\Override]
 	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		$this->data = [
 			'memory' => memory_get_peak_usage(true),
@@ -28,17 +32,11 @@ class MemoryDataCollector extends AbstractDataCollector {
 		return $this->data['memory'];
 	}
 
-	/**
-	 * @return int|float
-	 */
-	public function getMemoryLimit() {
+	public function getMemoryLimit(): int|float {
 		return $this->data['memory_limit'];
 	}
 
-	/**
-	 * @return int|float
-	 */
-	private function convertToBytes(string $memoryLimit) {
+	private function convertToBytes(string $memoryLimit): int|float {
 		if ($memoryLimit === '-1') {
 			return -1;
 		}

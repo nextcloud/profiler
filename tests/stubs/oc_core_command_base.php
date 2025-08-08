@@ -16,6 +16,8 @@ namespace OC\Core\Command {
 		public const OUTPUT_FORMAT_PLAIN = 'plain';
 		public const OUTPUT_FORMAT_JSON = 'json';
 		public const OUTPUT_FORMAT_JSON_PRETTY = 'json_pretty';
+		public const SUCCESS = 0;
+		public const FAILURE = 1;
 
 		protected string $defaultOutputFormat = self::OUTPUT_FORMAT_PLAIN;
 
@@ -25,7 +27,19 @@ namespace OC\Core\Command {
 		protected function configure() {
 		}
 
-		public function setName(string $name) {
+		protected function execute(InputInterface $input, OutputInterface $output): int {
+		}
+
+		public function setName(string $name): static {
+		}
+
+		public function setDescription(string $description): static {
+		}
+
+		public function addOption(string $name, string|array|null $shortcut = null, ?int $mode = null, string $description = '', mixed $default = null /* array|\Closure $suggestedValues = [] */): static {
+		}
+
+		public function addArgument(string $name, ?int $mode = null, string $description = '', mixed $default = null /* array|\Closure $suggestedValues = null */): static {
 		}
 
 		public function getApplication(): ?Application {
