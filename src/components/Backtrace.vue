@@ -81,6 +81,6 @@ th {
 }
 
 td.line {
-	padding-right: 2em;
+	padding-inline-end: 2em;
 }
 </style>

@@ -50,6 +50,7 @@ class Application extends App implements IBootstrap {
 		if ($profiler->isEnabled() && $userSession->isLoggedIn() && $groupManager->isAdmin($userSession->getUser()->getUID())) {
 			$initialState->provideInitialState('request-token', $request->getId());
 			Util::addScript('profiler', 'profiler-toolbar');
+			Util::addStyle('profiler', 'profiler-toolbar');
 		}
 	}
 }

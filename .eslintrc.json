@@ -1,0 +1,33 @@
+{
+	"extends": [
+		"@nextcloud/eslint-config/vue3"
+	],
+	"parserOptions": {
+		"babelOptions": {
+			"plugins": [
+				"@babel/plugin-syntax-import-assertions"
+			]
+		}
+	},
+	"rules": {
+		"@nextcloud/no-deprecations": [
+			"error",
+			{
+				"parseAppInfo": false
+			}
+		],
+		"@nextcloud/no-removed-apis": [
+			"error",
+			{
+				"parseAppInfo": false
+			}
+		],
+		"import/no-unresolved": [
+			"error",
+			{
+				"ignore": ["\\?raw$"]
+			}
+		],
+		"vue/custom-event-name-casing": "error"
+	}
+}

@@ -5,14 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <template>
-	<div id="profiler" class="content">
+	<NcContent app-name="profiler">
 		<NcAppNavigation>
 			<template #list>
 				<NcAppNavigationCaption name="Categories" />
 				<NcAppNavigationItem v-for="cat in categoryInfo"
 					:key="cat.id"
 					:to="{ name: cat.id, params: {token: token} }"
-					:name="cat.name" />
+					:name="cat.name">
+					<template #icon>
+						<component :is="cat.icon" :size="20" />
+					</template>
+				</NcAppNavigationItem>
 
 				<NcAppNavigationCaption name="Requests" />
 				<div class="select-container">
@@ -33,17 +37,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				<router-view />
 			</div>
 		</NcAppContent>
-	</div>
+	</NcContent>
 </template>
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import NcAppNavigationCaption from '@nextcloud/vue/dist/Components/NcAppNavigationCaption.js'
-import NcAppNavigation from '@nextcloud/vue/dist/Components/NcAppNavigation.js'
-import NcAppNavigationItem from '@nextcloud/vue/dist/Components/NcAppNavigationItem.js'
-import NcSelect from '@nextcloud/vue/dist/Components/NcSelect.js'
-import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
+import NcAppNavigationCaption from '@nextcloud/vue/components/NcAppNavigationCaption'
+import NcContent from '@nextcloud/vue/components/NcContent'
+import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation'
+import NcAppNavigationItem from '@nextcloud/vue/components/NcAppNavigationItem'
+import NcSelect from '@nextcloud/vue/components/NcSelect'
+import NcAppContent from '@nextcloud/vue/components/NcAppContent'
 import ProfileHeader from '../components/ProfileHeader.vue'
+import DatabaseOutline from 'vue-material-design-icons/DatabaseOutline.vue'
+import ChartGantt from 'vue-material-design-icons/ChartGantt.vue'
+import Cached from 'vue-material-design-icons/Cached.vue'
+import Account from 'vue-material-design-icons/Account.vue'
+import ServerNetwork from 'vue-material-design-icons/ServerNetwork.vue'
+
 import { mapState } from 'vuex'
 
 const token = loadState('profiler', 'token')
@@ -58,6 +69,11 @@ export default {
 		NcAppNavigationCaption,
 		ProfileHeader,
 		NcSelect,
+		NcContent,
+		DatabaseOutline,
+		ChartGantt,
+		Cached,
+		ServerNetwork,
 	},
 	beforeRouteUpdate(to, from, next) {
 		next(vm => {
@@ -76,22 +92,27 @@ export default {
 				{
 					id: 'http',
 					name: 'Request and Response',
+					icon: ServerNetwork,
 				},
 				{
 					id: 'db',
 					name: 'Database queries',
+					icon: DatabaseOutline,
 				},
 				{
 					id: 'event',
 					name: 'Events',
+					icon: ChartGantt,
 				},
 				{
 					id: 'ldap',
 					name: 'LDAP',
+					icon: Account,
 				},
 				{
 					id: 'cache',
 					name: 'Cache',
+					icon: Cached,
 				},
 			],
 		}
@@ -127,14 +148,6 @@ export default {
 	.multiselect {
 		width: 100%
 	}
-}
-
-.content {
-	height: 100%;
-	box-sizing: border-box;
-	display: flex;
-	min-height: 100%;
-	width: 100%;
 }
 
 .router-wrapper {

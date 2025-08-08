@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div class="timeline">
 		<div class="slider">
-			<VueSlider v-model="range"
+			<Slider v-model="range"
 				:min="0"
 				:max="duration"
-				:interval="0.1" />
+				:step="0.1" />
 		</div>
 		<div class="zoom-container" :style="zoomStyle">
 			<TimelineNode :event="eventTree" @click="(event) => range = [toMs(event.start, true), toMs(event.stop)]" />
@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import TimelineNode from './TimelineNode.vue'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/antd.css'
+import '@vueform/slider/themes/default.css'
+import Slider from '@vueform/slider'
 
 /**
  *
@@ -40,7 +40,7 @@ export default {
 	name: 'Timeline',
 	components: {
 		TimelineNode,
-		VueSlider,
+		Slider,
 	},
 	props: {
 		events: {

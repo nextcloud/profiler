@@ -297,7 +297,7 @@ export default {
 	position: fixed;
 	width: 100%;
 	bottom: 0;
-	left: 0;
+	inset-inline-start: 0;
 	display: flex;
 	flex-direction: row;
 	background-color: #222;
@@ -309,8 +309,7 @@ export default {
 
 	&.bottom-bar-closed {
 		width: initial;
-		right: 0;
-		left: initial;
+		inset-inline: initial 0;
 	}
 
 	& > .toolbar-block {
@@ -322,15 +321,15 @@ export default {
 	}
 
 	.pr-3, .px-3 {
-		padding-right: 1rem !important;
+		padding-inline-end: 1rem !important;
 	}
 
 	.pl-3, .px-3 {
-		padding-left: 1rem !important;
+		padding-inline-start: 1rem !important;
 	}
 
 	.mr-3 {
-		margin-right: 0.5rem !important;
+		margin-inline-end: 0.5rem !important;
 	}
 
 	.lighter {
@@ -401,11 +400,11 @@ export default {
 }
 
 .url {
-	margin-left: 48px;
+	margin-inline-start: 48px;
 }
 
 .toggle-button {
-	margin-left: auto;
+	margin-inline-start: auto;
 }
 </style>
 

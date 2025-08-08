@@ -82,7 +82,7 @@ export default {
 
 <style lang="scss" scoped>
 .top-bar {
-	right: 12px;
+	inset-inline-end: 12px;
 	display: flex;
 	z-index: 10;
 	flex-direction: column;
@@ -92,12 +92,12 @@ export default {
 		display: flex;
 		flex-direction: row;
 		& > div {
-			margin-left: 20px;
+			margin-inline-start: 20px;
 		}
 	}
 
 	button.download {
-		float: right;
+		float: inline-end;
 	}
 }
 
@@ -114,6 +114,6 @@ export default {
 }
 
 .url {
-	margin-left: 48px;
+	margin-inline-start: 48px;
 }
 </style>

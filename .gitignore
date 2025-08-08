@@ -14,6 +14,7 @@ yarn-error.log
 *.njsproj
 *.sln
 /js
+/css
 /.php-cs-fixer.cache
 /vendor
 /vendor-bin/*/vendor
