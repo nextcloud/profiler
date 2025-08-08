@@ -13,7 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 export default {
 	name: 'RouterView',
@@ -21,7 +22,7 @@ export default {
 		router() {
 			return this.profiles[this.$route.params.token]?.collectors.router
 		},
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 	},
 }
 </script>

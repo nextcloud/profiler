@@ -59,7 +59,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 export default {
 	name: 'CacheView',
@@ -74,7 +75,7 @@ export default {
 				return key.includes('cache')
 			})
 		},
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 		cacheTotal() {
 			let cacheTotal = 0
 			this.cacheProfiles.forEach(entry => {
