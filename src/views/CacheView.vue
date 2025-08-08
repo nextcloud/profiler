@@ -149,7 +149,7 @@ tbody tr:hover, tbody tr:focus, tbody tr:active {
 	background-color: red;
 	height: 10px;
 	width: 10px;
-	margin-left: 5px;
+	margin-inline-start: 5px;
 }
 
 .rectangle-green {
@@ -157,7 +157,7 @@ tbody tr:hover, tbody tr:focus, tbody tr:active {
 	background-color: green;
 	height: 10px;
 	width: 10px;
-	margin-left: 5px;
+	margin-inline-start: 5px;
 }
 
 .d-flex {

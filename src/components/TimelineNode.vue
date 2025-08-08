@@ -84,6 +84,6 @@ div.child {
 }
 
 span.duration {
-	float: right;
+	float: inline-end;
 }
 </style>
