@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Compare extends Base {
+	#[\Override]
 	protected function configure(): void {
 		parent::configure();
 		$this
@@ -26,6 +27,7 @@ class Compare extends Base {
 			->addOption('backtrace', 'b', InputOption::VALUE_NONE, 'Show backtraces for added queries');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$backtrace = $input->getOption('backtrace');
 		$from = json_decode(file_get_contents($input->getArgument('first')), true);

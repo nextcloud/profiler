@@ -14,10 +14,12 @@ use OCP\AppFramework\Http\Response;
 use OCP\DataCollector\AbstractDataCollector;
 
 class HttpDataCollector extends AbstractDataCollector {
+	#[\Override]
 	public function getName(): string {
 		return 'http';
 	}
 
+	#[\Override]
 	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		try {
 			$content = $request->getParams();

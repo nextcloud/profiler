@@ -15,12 +15,12 @@ use OCP\DataCollector\AbstractDataCollector;
 use OCP\Diagnostics\IEventLogger;
 
 class EventLoggerDataProvider extends AbstractDataCollector {
-	private IEventLogger $eventLogger;
-
-	public function __construct(IEventLogger $eventLogger) {
-		$this->eventLogger = $eventLogger;
+	public function __construct(
+		private IEventLogger $eventLogger,
+	) {
 	}
 
+	#[\Override]
 	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		$this->data = [];
 		foreach ($this->eventLogger->getEvents() as $event) {
@@ -34,6 +34,7 @@ class EventLoggerDataProvider extends AbstractDataCollector {
 		};
 	}
 
+	#[\Override]
 	public function getName(): string {
 		return 'event';
 	}

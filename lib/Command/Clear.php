@@ -22,6 +22,7 @@ class Clear extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure(): void {
 		parent::configure();
 		$this
@@ -29,6 +30,7 @@ class Clear extends Base {
 			->setDescription('Remove all saved profiles');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->profiler->clear();
 

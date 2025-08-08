@@ -21,6 +21,7 @@ class Enable extends Command {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure(): void {
 		parent::configure();
 		$this
@@ -28,6 +29,7 @@ class Enable extends Command {
 			->setDescription('Enable profiling');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->config->setSystemValue('debug', true);
 		$this->config->setSystemValue('profiler', true);

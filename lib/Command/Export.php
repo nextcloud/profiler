@@ -23,6 +23,7 @@ class Export extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure(): void {
 		parent::configure();
 		$this
@@ -34,6 +35,7 @@ class Export extends Base {
 			->addOption('before', null, InputOption::VALUE_REQUIRED, 'Maximum date for listed profiles, as unix timestamp');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$since = $input->getOption('since') ? (int)$input->getOption('since') : null;
 		$before = $input->getOption('before') ? (int)$input->getOption('before') : null;

@@ -15,10 +15,12 @@ use OCP\AppFramework\Http\Response;
 use OCP\DataCollector\AbstractDataCollector;
 
 class MemoryDataCollector extends AbstractDataCollector {
+	#[\Override]
 	public function getName(): string {
 		return 'memory';
 	}
 
+	#[\Override]
 	public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
 		$this->data = [
 			'memory' => memory_get_peak_usage(true),

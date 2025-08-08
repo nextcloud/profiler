@@ -21,6 +21,7 @@ class Disable extends Command {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure(): void {
 		parent::configure();
 		$this
@@ -28,6 +29,7 @@ class Disable extends Command {
 			->setDescription('Disable profiling');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->config->setSystemValue('profiler', false);
 		$output->writeln('<info>Note: debug mode has been left enabled</info>');
