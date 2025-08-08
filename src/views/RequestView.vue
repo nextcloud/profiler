@@ -38,7 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 export default {
 	name: 'RequestView',
@@ -52,7 +53,7 @@ export default {
 		memory() {
 			return this.profiles[this.$route.params.token]?.collectors?.memory
 		},
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 	},
 }
 </script>

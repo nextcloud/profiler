@@ -47,8 +47,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
 import Backtrace from '../components/Backtrace.vue'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 export default {
 	name: 'LdapView',
@@ -59,8 +60,7 @@ export default {
 		ldap() {
 			return this.profiles[this.$route.params.token]?.collectors.ldap
 		},
-		...mapGetters(['profile']),
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 	},
 }
 </script>

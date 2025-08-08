@@ -158,7 +158,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState, mapActions } from 'pinia'
 import { generateUrl } from '@nextcloud/router'
 import Database from 'vue-material-design-icons/Database.vue'
 import Account from 'vue-material-design-icons/Account.vue'
@@ -260,10 +261,10 @@ export default {
 		validStackElements() {
 			return this.stackElements.filter(stackElement => stackElement.profile)
 		},
-		...mapState(['profiles', 'stackElements']),
+		...mapState(useStore, ['profiles', 'stackElements']),
 	},
 	mounted() {
-		this.$store.dispatch('loadProfile', { token })
+		this.loadProfile({ token })
 	},
 	methods: {
 		displayDuration(time) {
@@ -288,6 +289,7 @@ export default {
 				token: this.token,
 			})
 		},
+		...mapActions(useStore, ['loadProfile']),
 	},
 }
 </script>

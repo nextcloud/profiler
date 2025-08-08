@@ -55,7 +55,8 @@ import Cached from 'vue-material-design-icons/Cached.vue'
 import Account from 'vue-material-design-icons/Account.vue'
 import ServerNetwork from 'vue-material-design-icons/ServerNetwork.vue'
 
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState, mapActions } from 'pinia'
 
 const token = loadState('profiler', 'token')
 const recentProfiles = loadState('profiler', 'recentProfiles')
@@ -117,10 +118,10 @@ export default {
 			],
 		}
 	},
-	computed: mapState(['profiles', 'importedProfiles']),
+	computed: mapState(useStore, ['profiles', 'importedProfiles']),
 	watch: {
 		selectedProfile(newToken) {
-			this.$store.dispatch('loadProfile', { token: newToken.token })
+			this.loadProfile({ token: newToken.token })
 			this.$router.push({ name: this.selectedCategory, params: { token: newToken.token } })
 			this.token = newToken.token
 		},
@@ -129,14 +130,15 @@ export default {
 		},
 	},
 	mounted() {
-		this.$store.dispatch('loadProfile', { token })
+		this.loadProfile({ token })
 	},
 	methods: {
 		importFiles(event) {
 			for (const file of event.target.files) {
-				this.$store.dispatch('importProfile', { file })
+				this.importProfile({ file })
 			}
 		},
+		...mapActions(useStore, ['loadProfile', 'importProfile']),
 	},
 }
 </script>

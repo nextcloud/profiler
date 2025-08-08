@@ -49,8 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Timeline from '../components/Timeline.vue'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 const objectMap = (obj, fn) =>
 	Object.fromEntries(
@@ -82,7 +83,7 @@ export default {
 		start() {
 			return this.profiles[this.$route.params.token]?.collectors.event.init?.start
 		},
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 	},
 }
 </script>
