@@ -56,14 +56,14 @@ const filePrefix = computed((): string => {
 	while (files[0][i] && files.every(w => w[i] === files[0][i])) {
 		i++
 	}
-	return files[0].substr(0, i)
+	return files[0].substring(0, i)
 })
 
 const trace = computed(() => {
 	const prefixLength = filePrefix.value.length
 	return backtrace.map(line => {
 		return {
-			line: line.file ? (line.file.substr(prefixLength) + ' ' + line.line) : '--',
+			line: line.file ? (line.file.substring(prefixLength) + ' ' + line.line) : '--',
 			call: line.class ? (line.class + line.type + line.function) : line.function,
 		}
 	})
