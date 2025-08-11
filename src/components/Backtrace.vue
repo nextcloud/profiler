@@ -42,13 +42,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { computed, defineProps, ref } from 'vue'
 import type { BacktraceRow } from '../store'
 
-const backtrace = defineProps<{
+const { backtrace } = defineProps<{
 	backtrace: BacktraceRow[]
 }>()
 const expanded = ref(true)
 
 const filePrefix = computed((): string => {
-	const files = backtrace.value.map(line => line.file || '')
+	const files = backtrace.map(line => line.file || '')
 	if (!files[0] || files.length === 1) {
 		return files[0] || ''
 	}
@@ -61,7 +61,7 @@ const filePrefix = computed((): string => {
 
 const trace = computed(() => {
 	const prefixLength = filePrefix.value.length
-	return this.backtrace.map(line => {
+	return backtrace.map(line => {
 		return {
 			line: line.file ? (line.file.substring(prefixLength) + ' ' + line.line) : '--',
 			call: line.class ? (line.class + line.type + line.function) : line.function,
