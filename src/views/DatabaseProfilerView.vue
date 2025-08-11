@@ -93,7 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 								<template v-if="similarQueries[index].singles.length > 0">
 									<h4>Unique combination of params:</h4>
 									<div class="detail-see">
-										See {{ similarQueries[index].singles.length }} in :
+										See {{ similarQueries[index].singles.length }} in:
 										<a v-for="(simIndex, i) in similarQueries[index].singles" :key="i" :href="anchor(simIndex)">
 											{{ simIndex }}&nbsp;
 										</a>
@@ -104,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 									<ul>
 										<li v-for="(realDuplicate, i) in similarQueries[index].multiples" :key="i">
 											<div class="detail-see">
-												See {{ realDuplicate.count }} use of params "{{ JSON.parse(realDuplicate.params) }}" in :
+												See {{ realDuplicate.count }} use of params "{{ JSON.parse(realDuplicate.params) }}" in:
 												<a v-for="(dupIndex, j) in realDuplicate.indexes" :key="j" :href="anchor(dupIndex)">
 													{{ dupIndex }}&nbsp;
 												</a>
