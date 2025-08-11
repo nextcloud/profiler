@@ -10,12 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
-export default {
-	name: 'LoadingView',
-}
-</script>
-
 <style scoped lang="scss">
 .grid {
 	display: grid;

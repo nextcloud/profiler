@@ -37,25 +37,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useStore } from '../store'
-import { mapState } from 'pinia'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import type { Http, Router, Memory } from '../store'
 
-export default {
-	name: 'RequestView',
-	computed: {
-		http() {
-			return this.profiles[this.$route.params.token]?.collectors.http
-		},
-		router() {
-			return this.profiles[this.$route.params.token]?.collectors.router
-		},
-		memory() {
-			return this.profiles[this.$route.params.token]?.collectors?.memory
-		},
-		...mapState(useStore, ['profiles']),
-	},
-}
+const store = useStore()
+const route = useRoute()
+
+const http = computed<Http>(() => {
+	return store.profiles[route.params.token]?.collectors.http
+})
+
+const router = computed<Router>(() => {
+	return store.profiles[route.params.token]?.collectors.router
+})
+
+const memory = computed<Memory>(() => {
+	return store.profiles[route.params.token]?.collectors.memory
+})
 </script>
 
 <style lang="scss" scoped>

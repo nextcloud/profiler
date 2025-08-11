@@ -6,16 +6,101 @@ import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { ref } from 'vue'
 
-interface StackElement {
+interface BacktraceRow {
+	file: string,
+	line: number,
+	class: string|null,
+	type: string,
+	function: string,
+}
 
+interface Memory {
+	memory: number,
+	memory_limit: number,
+}
+
+interface Router {
+	appName: string,
+	controllerName: string,
+	actionName: string,
+}
+
+interface DbQuery {
+	executionMS: number,
+	start: number,
+	end: number,
+}
+
+interface Db {
+	queries: DbQuery[],
+}
+
+interface Headers {
+	[index: string]: string
+}
+
+interface Parameters {
+	[index: string]: string
+}
+
+interface Request {
+	url: string,
+	method: string,
+	userAgent: string,
+	httpProtocol: string,
+	params: Parameters,
+}
+
+interface Response {
+	statusCode: number,
+	params: object,
+	ETag: string,
+	headers: Headers,
+}
+
+interface Http {
+	request: Request,
+	response: Response,
+}
+
+interface CacheEntry {
+	end: number,
+	start: number,
+	op: string,
+	hit: boolean,
+}
+
+interface Cache {
+	queries: CacheEntry[]
+}
+
+interface LdapQuery {
+	start: number,
+	end: number
+	query: string,
+	args: string[],
+	backtrace: BacktraceRow[],
+}
+
+interface Collector {
+	memory: Memory,
+	ldap: LdapQuery[],
+	router: Router,
+	http: Http,
+	db: Db,
+	[index: string]: Cache
 }
 
 interface Profile {
-
+	collectors: Collector,
 }
 
 interface Profiles {
 	[index: string]: Profile;
+}
+
+interface StackElement {
+	profile: Profile,
 }
 
 /**
