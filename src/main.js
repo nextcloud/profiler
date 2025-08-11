@@ -4,10 +4,10 @@
 import { createApp } from 'vue'
 import App from './views/Profiler.vue'
 import router from './router/router.js'
-import store from './store.js'
+import { createPinia } from 'pinia'
 
 const app = createApp(App)
 
-app.use(store)
+app.use(createPinia())
 app.use(router)
 app.mount('#profiler')

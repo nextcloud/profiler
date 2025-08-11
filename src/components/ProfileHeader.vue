@@ -23,7 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 /**
  * Download a string as textfile
@@ -69,7 +70,7 @@ export default {
 		queriesNumber() {
 			return Object.values(this.profile.collectors.db.queries).length
 		},
-		...mapState(['profiles']),
+		...mapState(useStore, ['profiles']),
 	},
 	methods: {
 		exportProfile() {

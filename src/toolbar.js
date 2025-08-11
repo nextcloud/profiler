@@ -2,13 +2,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { createApp } from 'vue'
+import { createPinia, storeToRefs } from 'pinia'
+import { useStore } from './store.ts'
 import App from './views/ProfilerToolbar.vue'
-import store from './store.js'
 
 const app = createApp(App)
 
-app.use(store)
+app.use(createPinia())
 app.mount('#profiler-toolbar')
+
+const store = useStore()
+
+const { stackElements } = storeToRefs(store)
 
 // Hack into the fetch() and XMLHttpRequest to log related http requests
 if (window.fetch && window.fetch.polyfill === undefined) {
@@ -49,9 +54,10 @@ if (window.fetch && window.fetch.polyfill === undefined) {
 				stackElement.statusCode = r.status
 				stackElement.profile = r.headers.get('x-debug-token')
 				stackElement.profilerUrl = r.headers.get('x-debug-token-link')
-				store.commit('addStackElement', stackElement)
+				stackElements.value.push(stackElement)
 			}, function(e) {
-				store.commit('addStackElement', stackElement)
+				stackElements.value.push(stackElement)
+				console.error(e)
 			})
 		}
 		return promise
@@ -101,7 +107,7 @@ if (window.XMLHttpRequest && XMLHttpRequest.prototype.addEventListener) {
 					stackElement.error = self.status < 200 || self.status >= 400
 					stackElement.statusCode = self.status
 					extractHeaders(self, stackElement)
-					store.commit('addStackElement', stackElement)
+					stackElements.value.push(stackElement)
 				}
 			}, false)
 		}

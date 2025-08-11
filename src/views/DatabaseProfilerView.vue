@@ -176,11 +176,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
 import QueryExplanation from '../components/QueryExplanation.vue'
 import Backtrace from '../components/Backtrace.vue'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import { useStore } from '../store'
+import { mapState } from 'pinia'
 
 export default {
 	name: 'DatabaseProfilerView',
@@ -267,8 +268,7 @@ export default {
 				return query
 			}).sort((a, b) => b.time - a.time)
 		},
-		...mapGetters(['profile']),
-		...mapState(['profiles']),
+		...mapState(useStore, ['profile', 'profiles']),
 	},
 	methods: {
 		explainQuery(index) {
@@ -388,11 +388,11 @@ tbody tr:hover, tbody tr:focus, tbody tr:active {
 }
 
 .menu-space {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 }
 
 .detail-see {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 	font-size: 0.8em;
 }
 
