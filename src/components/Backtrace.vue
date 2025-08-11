@@ -38,41 +38,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
-export default {
-	name: 'Backtrace',
-	props: {
-		backtrace: {
-			type: Array,
-			required: true,
-		},
-	},
-	data: () => {
-		return { expanded: false }
-	},
-	computed: {
-		filePrefix() {
-			const files = this.backtrace.map(line => line.file || '')
-			if (!files[0] || files.length === 1) {
-				return files[0] || ''
-			}
-			let i = 0
-			while (files[0][i] && files.every(w => w[i] === files[0][i])) {
-				i++
-			}
-			return files[0].substr(0, i)
-		},
-		trace() {
-			const prefixLength = this.filePrefix.length
-			return this.backtrace.map(line => {
-				return {
-					line: line.file ? (line.file.substr(prefixLength) + ' ' + line.line) : '--',
-					call: line.class ? (line.class + line.type + line.function) : line.function,
-				}
-			})
-		},
-	},
-}
+<script lang="ts" setup>
+import { computed, defineProps, ref } from 'vue'
+import type { BacktraceRow } from '../store'
+
+const { backtrace } = defineProps<{
+	backtrace: BacktraceRow[]
+}>()
+const expanded = ref(true)
+
+const filePrefix = computed((): string => {
+	const files = backtrace.map(line => line.file || '')
+	if (!files[0] || files.length === 1) {
+		return files[0] || ''
+	}
+	let i = 0
+	while (files[0][i] && files.every(w => w[i] === files[0][i])) {
+		i++
+	}
+	return files[0].substr(0, i)
+})
+
+const trace = computed(() => {
+	const prefixLength = filePrefix.value.length
+	return backtrace.map(line => {
+		return {
+			line: line.file ? (line.file.substr(prefixLength) + ' ' + line.line) : '--',
+			call: line.class ? (line.class + line.type + line.function) : line.function,
+		}
+	})
+})
+
 </script>
 
 <style lang="scss" scoped>

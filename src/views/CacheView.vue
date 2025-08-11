@@ -58,52 +58,53 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { useStore } from '../store'
-import { mapState } from 'pinia'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import type { CacheQuery } from '../store'
 
-export default {
-	name: 'CacheView',
-	computed: {
-		cacheProfiles() {
-			if (!this.profiles[this.$route.params.token]?.collectors) {
-				return []
-			}
-			return Object.entries(this.profiles[this.$route.params.token].collectors).filter(entry => {
-				const [key] = entry
-				console.debug(entry)
-				return key.includes('cache')
-			})
-		},
-		...mapState(useStore, ['profiles']),
-		cacheTotal() {
-			let cacheTotal = 0
-			this.cacheProfiles.forEach(entry => {
-				const [, value] = entry
-				cacheTotal += value.cacheMiss + value.cacheHit
-			})
-			return cacheTotal
-		},
-		cacheHits() {
-			let cacheTotal = 0
-			this.cacheProfiles.forEach(entry => {
-				const [, value] = entry
-				cacheTotal += value.cacheHit
-			})
-			return cacheTotal
-		},
-		cacheTime() {
-			let cacheTime = 0
-			this.cacheProfiles.forEach(entry => {
-				const [, value] = entry
-				cacheTime += (value.queries.reduce((acc, query) => {
-					return query.end - query.start + acc
-				}, 0))
-			})
-			return (cacheTime * 1000).toFixed(1)
-		},
-	},
-}
+const store = useStore()
+const route = useRoute()
+
+const cacheProfiles = computed<CacheQuery>(() => {
+	if (!store.profiles[route.params.token]?.collectors) {
+		return []
+	}
+	return Object.entries(store.profiles[route.params.token].collectors).filter(entry => {
+		const [key] = entry
+		return key.includes('cache')
+	})
+})
+
+const cacheTotal = computed<number>(() => {
+	let cacheTotal = 0
+	cacheProfiles.value.forEach(entry => {
+		const [, value] = entry
+		cacheTotal += value.cacheMiss + value.cacheHit
+	})
+	return cacheTotal
+})
+
+const cacheHits = computed<number>(() => {
+	let cacheTotal = 0
+	cacheProfiles.value.forEach(entry => {
+		const [, value] = entry
+		cacheTotal += value.cacheHit
+	})
+	return cacheTotal
+})
+
+const cacheTime = computed<number>(() => {
+	let cacheTime = 0
+	cacheProfiles.value.forEach(entry => {
+		const [, value] = entry
+		cacheTime += (value.queries.reduce((acc, query) => {
+			return query.end - query.start + acc
+		}, 0))
+	})
+	return (cacheTime * 1000).toFixed(1)
+})
 </script>
 
 <style scoped>
