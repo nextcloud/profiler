@@ -274,7 +274,7 @@ export default {
 		explainQuery(index) {
 			axios.get(generateUrl('/apps/profiler/explain/{token}/{index}', { token: this.$route.params.token, index }))
 				.then((response) => {
-					this.$set(this.explainedQueries, index, response.data)
+					this.explainedQueries[index] = response.data
 				})
 		},
 		tableUse(tableUsage) {
@@ -316,13 +316,13 @@ export default {
 					params: paramStr,
 				}
 			}).sort((a, b) => b.count - a.count)
-			this.$set(this.similarQueries, index, {
+			this.similarQueries[index] = {
 				singles,
 				multiples,
-			})
+			}
 		},
 		openTableUseDetails(index) {
-			this.$set(this.detailTablesQueries, index, {})
+			this.detailTablesQueries[index] = {}
 		},
 		anchor(index) {
 			return '#queries-' + index
