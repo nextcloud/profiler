@@ -48,10 +48,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
+<script setup lang="ts">
 import Timeline from '../components/Timeline.vue'
 import { useStore } from '../store'
-import { mapState } from 'pinia'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+const store = useStore()
+const route = useRoute()
 
 const objectMap = (obj, fn) =>
 	Object.fromEntries(
@@ -60,32 +64,24 @@ const objectMap = (obj, fn) =>
 		),
 	)
 
-export default {
-	name: 'EventsView',
-	components: {
-		Timeline,
-	},
-	computed: {
-		events() {
-			const start = this.start
-			const queries = Object.values(this.queries)
-			return objectMap(this.profiles[this.$route.params.token]?.collectors.event || {}, event => ({
-				durationMs: (event.duration * 1000).toFixed(1),
-				startMs: ((event.start - start) * 1000).toFixed(1),
-				stopMs: ((event.stop - start) * 1000).toFixed(1),
-				queries: queries.filter(query => (query.start >= event.start && query.start < event.stop)),
-				...event,
-			}))
-		},
-		queries() {
-			return this.profiles[this.$route.params.token]?.collectors.db.queries || {}
-		},
-		start() {
-			return this.profiles[this.$route.params.token]?.collectors.event.init?.start
-		},
-		...mapState(useStore, ['profiles']),
-	},
-}
+const start = computed(() => {
+	return store.profiles[route.params.token]?.collectors.event.init?.start
+})
+
+const queries = computed(() => {
+	return store.profiles[route.params.token]?.collectors.db.queries || {}
+})
+
+const events = computed(() => {
+	const queryValues = Object.values(queries.value)
+	return objectMap(store.profiles[route.params.token]?.collectors.event || {}, event => ({
+		durationMs: (event.duration * 1000).toFixed(1),
+		startMs: ((event.start - start.value) * 1000).toFixed(1),
+		stopMs: ((event.stop - start.value) * 1000).toFixed(1),
+		queries: queryValues.filter(query => (query.start >= event.start && query.start < event.stop)),
+		...event,
+	}))
+})
 </script>
 
 <style lang="scss" scoped>

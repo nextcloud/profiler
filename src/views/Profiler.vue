@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				<NcAppNavigationCaption name="Requests" />
 				<div class="select-container">
 					<NcSelect v-model="selectedProfile"
-						:options="recentProfiles.concat(importedProfiles)"
+						:options="recentProfiles.concat(store.importedProfiles)"
 						class="select"
 						label="url"
 						track-by="token" />
@@ -40,9 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</NcContent>
 </template>
 
-<script>
+<script setup lang="ts">
 import { loadState } from '@nextcloud/initial-state'
-import NcAppNavigationCaption from '@nextcloud/vue/components/NcAppNavigationCaption'
+import NcAppNavigationCaption
+	from '@nextcloud/vue/components/NcAppNavigationCaption'
 import NcContent from '@nextcloud/vue/components/NcContent'
 import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation'
 import NcAppNavigationItem from '@nextcloud/vue/components/NcAppNavigationItem'
@@ -55,91 +56,78 @@ import Cached from 'vue-material-design-icons/Cached.vue'
 import Account from 'vue-material-design-icons/Account.vue'
 import ServerNetwork from 'vue-material-design-icons/ServerNetwork.vue'
 
+import { watch, ref, onMounted } from 'vue'
 import { useStore } from '../store'
-import { mapState, mapActions } from 'pinia'
+import { useRouter, onBeforeRouteUpdate } from 'vue-router'
 
-const token = loadState('profiler', 'token')
-const recentProfiles = loadState('profiler', 'recentProfiles')
+const router = useRouter()
+const store = useStore()
+const token = ref<string>(loadState('profiler', 'token'))
+const recentProfiles = ref<string[]>(loadState('profiler', 'recentProfiles'))
 
-export default {
-	name: 'Profiler',
-	components: {
-		NcAppNavigation,
-		NcAppNavigationItem,
-		NcAppContent,
-		NcAppNavigationCaption,
-		ProfileHeader,
-		NcSelect,
-		NcContent,
-		DatabaseOutline,
-		ChartGantt,
-		Cached,
-		ServerNetwork,
+const selectedCategory = ref('db')
+const selectedProfile = ref(null)
+const categoryInfo = [
+	{
+		id: 'http',
+		name: 'Request and Response',
+		icon: ServerNetwork,
 	},
-	beforeRouteUpdate(to, from, next) {
-		next(vm => {
-			vm.selectedCategory = to.params.name
-			vm.token = to.params.token
-		})
+	{
+		id: 'db',
+		name: 'Database queries',
+		icon: DatabaseOutline,
 	},
-	data() {
-		return {
-			selectedCategory: 'db',
-			selectedProfile: null,
-			token,
-			profile: null,
-			recentProfiles,
-			categoryInfo: [
-				{
-					id: 'http',
-					name: 'Request and Response',
-					icon: ServerNetwork,
-				},
-				{
-					id: 'db',
-					name: 'Database queries',
-					icon: DatabaseOutline,
-				},
-				{
-					id: 'event',
-					name: 'Events',
-					icon: ChartGantt,
-				},
-				{
-					id: 'ldap',
-					name: 'LDAP',
-					icon: Account,
-				},
-				{
-					id: 'cache',
-					name: 'Cache',
-					icon: Cached,
-				},
-			],
-		}
+	{
+		id: 'event',
+		name: 'Events',
+		icon: ChartGantt,
 	},
-	computed: mapState(useStore, ['profiles', 'importedProfiles']),
-	watch: {
-		selectedProfile(newToken) {
-			this.loadProfile({ token: newToken.token })
-			this.$router.push({ name: this.selectedCategory, params: { token: newToken.token } })
-			this.token = newToken.token
-		},
-		selectedCategory(newCategory) {
-			this.$router.push({ name: newCategory, params: { token: this.$router.params.token } })
-		},
+	{
+		id: 'ldap',
+		name: 'LDAP',
+		icon: Account,
 	},
-	mounted() {
-		this.loadProfile({ token })
+	{
+		id: 'cache',
+		name: 'Cache',
+		icon: Cached,
 	},
-	methods: {
-		importFiles(event) {
-			for (const file of event.target.files) {
-				this.importProfile({ file })
-			}
-		},
-		...mapActions(useStore, ['loadProfile', 'importProfile']),
-	},
+]
+
+onBeforeRouteUpdate(async (to) => {
+	token.value = to.params.token
+	selectedCategory.value = to.params.name
+})
+
+watch(selectedProfile, (newToken) => {
+	store.loadProfile({ token: newToken.token })
+	router.push({
+		name: selectedCategory.value,
+		params: { token: newToken.token },
+	})
+	token.value = newToken.token
+})
+
+watch(selectedCategory, (newCategory) => {
+	router.push({
+		name: newCategory,
+		params: { token: router.params.token },
+	})
+})
+
+onMounted(() => {
+	store.loadProfile({ token: token.value })
+})
+
+/**
+ *
+ * @param event
+ */
+function importFiles(event) {
+	for (const file of event.target.files) {
+		store.importProfile({ file })
+	}
 }
 </script>
 
@@ -155,5 +143,4 @@ export default {
 .router-wrapper {
 	padding: 2rem;
 }
-
 </style>
