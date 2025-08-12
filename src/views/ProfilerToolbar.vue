@@ -413,7 +413,7 @@ export default {
 <style lang="scss">
 :root {
 	// overwrite body height for profiler toolbar
-	--body-height: calc(100% - env(safe-area-inset-bottom) - 50px - var(--body-container-margin) - 36px);
+	--body-height: calc(100% - env(safe-area-inset-bottom) - 50px - var(--body-container-margin) - 36px) !important;
 }
 
 .app-sidebar-tab__buttons {
