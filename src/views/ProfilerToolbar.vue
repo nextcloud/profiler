@@ -120,22 +120,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				<table class="info"
 					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
 					<tr v-for="(stackElement, index) in validStackElements" :key="index" style="cursor: pointer">
-						<td class="mr-3">
+						<td class="pr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ stackElement.method }}
 							</a>
 						</td>
-						<td class="mr-3">
+						<td class="pr-3">
 							<a :href="generateAjaxUrl(stackElement)" :class="{error: stackElement.error }">
 								{{ stackElement.statusCode }}
 							</a>
 						</td>
-						<td>
+						<td class="pr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ simplifiedUrl(stackElement.url) }}
 							</a>
 						</td>
-						<td class="mr-3">
+						<td class="pr-3">
 							<a :href="generateAjaxUrl(stackElement)">
 								{{ (stackElement.duration).toFixed() }} ms
 							</a>

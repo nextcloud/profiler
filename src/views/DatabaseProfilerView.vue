@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 									<div class="detail-see">
 										See {{ similarQueries[index].singles.length }} in:
 										<a v-for="(simIndex, i) in similarQueries[index].singles" :key="i" :href="anchor(simIndex)">
-											{{ simIndex }}&nbsp;
+											{{ simIndex }}
 										</a>
 									</div>
 								</template>
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 											<div class="detail-see">
 												See {{ realDuplicate.count }} use of params "{{ JSON.parse(realDuplicate.params) }}" in:
 												<a v-for="(dupIndex, j) in realDuplicate.indexes" :key="j" :href="anchor(dupIndex)">
-													{{ dupIndex }}&nbsp;
+													{{ dupIndex }}
 												</a>
 											</div>
 										</li>
@@ -394,6 +394,10 @@ tbody tr:hover, tbody tr:focus, tbody tr:active {
 .detail-see {
 	margin-inline-start: 20px;
 	font-size: 0.8em;
+
+	a {
+		margin-inline-end: 0.5rem;
+	}
 }
 
 </style>
