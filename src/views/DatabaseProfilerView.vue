@@ -175,159 +175,176 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import QueryExplanation from '../components/QueryExplanation.vue'
 import Backtrace from '../components/Backtrace.vue'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { useStore } from '../store'
-import { mapState } from 'pinia'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-export default {
-	name: 'DatabaseProfilerView',
-	components: {
-		QueryExplanation,
-		Backtrace,
-	},
-	data() {
-		return {
-			explainedQueries: {},
-			similarQueries: {},
-			detailTablesQueries: {},
+const store = useStore()
+const route = useRoute()
+
+const explainedQueries = ref({})
+const similarQueries = ref({})
+const detailTablesQueries = ref({})
+
+const queries = computed(() => {
+	return store.profiles[route.params.token]?.collectors.db.queries
+})
+
+const queriesNumber = computed(() => {
+	const queries = store.profiles[route.params.token]?.collectors.db.queries
+	if (queries === undefined) {
+		return 0
+	}
+	return Object.values(queries).length
+})
+
+const duplicateQueries = computed(() => {
+	const queries = store.profiles[route.params.token]?.collectors.db.queries
+	if (queries === undefined) {
+		return []
+	}
+	const querySql = []
+	Object.entries(queries).forEach(entry => {
+		const [index, query] = entry
+		if (querySql[query.sql] === undefined) {
+			querySql[query.sql] = {
+				count: 1,
+				time: query.executionMS,
+				indexes: [Number(index)],
+				sql: query.sql,
+			}
+		} else {
+			querySql[query.sql].count++
+			querySql[query.sql].time += query.executionMS
+			querySql[query.sql].indexes.push(Number(index))
 		}
-	},
-	computed: {
-		queries() {
-			return this.profiles[this.$route.params.token]?.collectors.db.queries
-		},
-		queriesNumber() {
-			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
-			if (queries === undefined) {
-				return 0
+	})
+	return Object.values(querySql).filter(query => {
+		return query.count > 1
+	}).sort((a, b) => b.time - a.time)
+})
+
+const tableQueries = computed(() => {
+	const queries = store.profiles[route.params.token]?.collectors.db.queries
+	if (queries === undefined) {
+		return []
+	}
+	const tableQueries = []
+	Object.entries(queries).forEach(entry => {
+		const [index, query] = entry
+		const matches = query.sql.matchAll(/(from|join|into|update)\s+["`](\w+\.?\w+\s*)["`]/gi)
+		if (matches === null) {
+			return
+		}
+		matches.forEach(match => {
+			const typeFrom = match[1].toLowerCase()
+			const table = match[2]
+			if (tableQueries[table] === undefined) {
+				tableQueries[table] = {
+					count: 1,
+					time: query.executionMS,
+					indexes: [index],
+					types: { from: 0, join: 0, into: 0, update: 0 },
+				}
+			} else {
+				tableQueries[table].count++
+				tableQueries[table].time += query.executionMS
+				tableQueries[table].indexes.push(index)
 			}
-			return Object.values(queries).length
-		},
-		duplicateQueries() {
-			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
-			if (queries === undefined) {
-				return []
+			tableQueries[table].types[typeFrom]++
+		})
+	})
+	return Object.entries(tableQueries).map(entry => {
+		const [table, query] = entry
+		query.table = table
+		return query
+	}).sort((a, b) => b.time - a.time)
+})
+
+/**
+ *
+ * @param index
+ */
+function explainQuery(index: number): void {
+	axios.get(generateUrl('/apps/profiler/explain/{token}/{index}', { token: route.params.token, index }))
+		.then((response) => {
+			explainedQueries.value[index] = response.data
+		})
+}
+
+/**
+ *
+ * @param tableUsage
+ */
+function tableUse(tableUsage): void {
+	const types = []
+	Object.entries(tableUsage.types).forEach(entry => {
+		const [type, count] = entry
+		if (count > 0) {
+			types.push(type + ': ' + count)
+		}
+	})
+	return types.join(', ')
+}
+
+/**
+ *
+ * @param index
+ */
+function openSimilarQuery(index: number): void {
+	const paramReferences = {}
+	this.duplicateQueries[index].indexes.forEach(indexDuplicate => {
+		const paramStr = JSON.stringify(queries.value[indexDuplicate].params)
+		if (paramReferences[paramStr] === undefined) {
+			paramReferences[paramStr] = {
+				count: 1,
+				indexes: [indexDuplicate],
 			}
-			const querySql = []
-			Object.entries(queries).forEach(entry => {
-				const [index, query] = entry
-				if (querySql[query.sql] === undefined) {
-					querySql[query.sql] = {
-						count: 1,
-						time: query.executionMS,
-						indexes: [Number(index)],
-						sql: query.sql,
-					}
-				} else {
-					querySql[query.sql].count++
-					querySql[query.sql].time += query.executionMS
-					querySql[query.sql].indexes.push(Number(index))
-				}
-			})
-			return Object.values(querySql).filter(query => {
-				return query.count > 1
-			}).sort((a, b) => b.time - a.time)
-		},
-		tableQueries() {
-			const queries = this.profiles[this.$route.params.token]?.collectors.db.queries
-			if (queries === undefined) {
-				return []
-			}
-			const tableQueries = []
-			Object.entries(queries).forEach(entry => {
-				const [index, query] = entry
-				const matches = query.sql.matchAll(/(from|join|into|update)\s+["`](\w+\.?\w+\s*)["`]/gi)
-				if (matches === null) {
-					return
-				}
-				matches.forEach(match => {
-					const typeFrom = match[1].toLowerCase()
-					const table = match[2]
-					if (tableQueries[table] === undefined) {
-						tableQueries[table] = {
-							count: 1,
-							time: query.executionMS,
-							indexes: [index],
-							types: { from: 0, join: 0, into: 0, update: 0 },
-						}
-					} else {
-						tableQueries[table].count++
-						tableQueries[table].time += query.executionMS
-						tableQueries[table].indexes.push(index)
-					}
-					tableQueries[table].types[typeFrom]++
-				})
-			})
-			return Object.entries(tableQueries).map(entry => {
-				const [table, query] = entry
-				query.table = table
-				return query
-			}).sort((a, b) => b.time - a.time)
-		},
-		...mapState(useStore, ['profile', 'profiles']),
-	},
-	methods: {
-		explainQuery(index) {
-			axios.get(generateUrl('/apps/profiler/explain/{token}/{index}', { token: this.$route.params.token, index }))
-				.then((response) => {
-					this.explainedQueries[index] = response.data
-				})
-		},
-		tableUse(tableUsage) {
-			const types = []
-			Object.entries(tableUsage.types).forEach(entry => {
-				const [type, count] = entry
-				if (count > 0) {
-					types.push(type + ': ' + count)
-				}
-			})
-			return types.join(', ')
-		},
-		openSimilarQuery(index) {
-			const paramReferences = {}
-			this.duplicateQueries[index].indexes.forEach(indexDuplicate => {
-				const paramStr = JSON.stringify(this.queries[indexDuplicate].params)
-				if (paramReferences[paramStr] === undefined) {
-					paramReferences[paramStr] = {
-						count: 1,
-						indexes: [indexDuplicate],
-					}
-				} else {
-					paramReferences[paramStr].count++
-					paramReferences[paramStr].indexes.push(indexDuplicate)
-				}
-			})
-			const singles = Object.entries(paramReferences).filter(entry => {
-				return entry[1].count === 1
-			}).map(entry => {
-				return entry[1].indexes[0]
-			})
-			const multiples = Object.entries(paramReferences).filter(entry => {
-				return entry[1].count > 1
-			}).map(entry => {
-				const [paramStr, param] = entry
-				return {
-					count: param.count,
-					indexes: param.indexes,
-					params: paramStr,
-				}
-			}).sort((a, b) => b.count - a.count)
-			this.similarQueries[index] = {
-				singles,
-				multiples,
-			}
-		},
-		openTableUseDetails(index) {
-			this.detailTablesQueries[index] = {}
-		},
-		anchor(index) {
-			return '#queries-' + index
-		},
-	},
+		} else {
+			paramReferences[paramStr].count++
+			paramReferences[paramStr].indexes.push(indexDuplicate)
+		}
+	})
+	const singles = Object.entries(paramReferences).filter(entry => {
+		return entry[1].count === 1
+	}).map(entry => {
+		return entry[1].indexes[0]
+	})
+	const multiples = Object.entries(paramReferences).filter(entry => {
+		return entry[1].count > 1
+	}).map(entry => {
+		const [paramStr, param] = entry
+		return {
+			count: param.count,
+			indexes: param.indexes,
+			params: paramStr,
+		}
+	}).sort((a, b) => b.count - a.count)
+	similarQueries.value[index] = {
+		singles,
+		multiples,
+	}
+}
+
+/**
+ *
+ * @param index
+ */
+function openTableUseDetails(index): void {
+	detailTablesQueries.value[index] = {}
+}
+
+/**
+ *
+ * @param index
+ */
+function anchor(index: number): string {
+	return '#queries-' + index
 }
 </script>
 

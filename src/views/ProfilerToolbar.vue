@@ -116,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				@click="xhrOpen = !xhrOpen">
 				<ChevronUp v-if="xhrOpen" class="mr-3" :size="18" />
 				<ChevronDown v-else class="mr-3" :size="18" />
-				{{ stackElements.length }} XHR requests
+				{{ store.stackElements.length }} XHR requests
 				<table class="info"
 					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
 					<tr v-for="(stackElement, index) in validStackElements" :key="index" style="cursor: pointer">
@@ -156,10 +156,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	</div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { loadState } from '@nextcloud/initial-state'
+import { ref, computed, onMounted } from 'vue'
 import { useStore } from '../store'
-import { mapState, mapActions } from 'pinia'
+import type { DbQuery, Profile, StackElement } from '../store'
 import { generateUrl } from '@nextcloud/router'
 import Database from 'vue-material-design-icons/Database.vue'
 import Account from 'vue-material-design-icons/Account.vue'
@@ -167,130 +168,139 @@ import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
 import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
 import Server from 'vue-material-design-icons/Server.vue'
 
+const store = useStore()
 const token = loadState('profiler', 'request-token')
+const open = ref(true)
+const xhrOpen = ref(false)
 
-export default {
-	name: 'ProfilerToolbar',
-	components: {
-		Database,
-		Account,
-		ChevronDown,
-		ChevronUp,
-		Server,
-	},
-	data() {
-		return {
-			token,
-			open: true,
-			xhrOpen: false,
+const profile = computed((): Profile => {
+	return store.profiles[token]
+})
+
+const queriesNumber = computed(() => {
+	return Object.values(profile.value.collectors.db.queries).length
+})
+
+const queriesTime = computed(() => {
+	return (Object.values(profile.value.collectors.db.queries).reduce((acc, query: DbQuery) => {
+		return query.executionMS + acc
+	}, 0) * 1000).toFixed(1)
+})
+
+const ldapQueryTime = computed(() => {
+	return (Object.values(profile.value.collectors.ldap).reduce((acc, query) => {
+		return query.end - query.start + acc
+	}, 0) * 1000).toFixed(1)
+})
+
+const cacheTotal = computed(() => {
+	let cacheTotal = 0
+	Object.entries(profile.value.collectors).forEach(entry => {
+		const [key, value] = entry
+		if (key.includes('cache')) {
+			cacheTotal += value.cacheMiss + value.cacheHit
 		}
-	},
-	computed: {
-		profile() {
-			return this.profiles[this.token]
-		},
-		queriesNumber() {
-			return Object.values(this.profile.collectors.db.queries).length
-		},
-		queriesTime() {
-			return (Object.values(this.profile.collectors.db.queries).reduce((acc, query) => {
-				return query.executionMS + acc
-			}, 0) * 1000).toFixed(1)
-		},
-		ldapQueryTime() {
-			return (Object.values(this.profile.collectors.ldap).reduce((acc, query) => {
+	})
+	return cacheTotal
+})
+
+const cacheHits = computed(() => {
+	let cacheTotal = 0
+	Object.entries(profile.value.collectors).forEach(entry => {
+		const [key, value] = entry
+		if (key.includes('cache')) {
+			cacheTotal += value.cacheHit
+		}
+	})
+	return cacheTotal
+})
+
+const cacheTime = computed(() => {
+	let cacheTime = 0
+	Object.entries(profile.value.collectors).forEach(entry => {
+		const [key, value] = entry
+		if (key.includes('cache')) {
+			cacheTime += (value.queries.reduce((acc, query) => {
 				return query.end - query.start + acc
-			}, 0) * 1000).toFixed(1)
-		},
-		cacheTotal() {
-			let cacheTotal = 0
-			Object.entries(this.profile.collectors).forEach(entry => {
-				const [key, value] = entry
-				if (key.includes('cache')) {
-					cacheTotal += value.cacheMiss + value.cacheHit
-				}
-			})
-			return cacheTotal
-		},
-		cacheHits() {
-			let cacheTotal = 0
-			Object.entries(this.profile.collectors).forEach(entry => {
-				const [key, value] = entry
-				if (key.includes('cache')) {
-					cacheTotal += value.cacheHit
-				}
-			})
-			return cacheTotal
-		},
-		cacheTime() {
-			let cacheTime = 0
-			Object.entries(this.profile.collectors).forEach(entry => {
-				const [key, value] = entry
-				if (key.includes('cache')) {
-					cacheTime += (value.queries.reduce((acc, query) => {
-						return query.end - query.start + acc
-					}, 0))
-				}
-			})
-			return (cacheTime * 1000).toFixed(1)
-		},
-		background() {
-			if (!this.profile) {
-				return ''
-			}
-			if (this.profile.statusCode === 200) {
-				return 'status-success'
-			}
-			if (this.profile.statusCode === 500) {
-				return 'status-error'
-			}
-			return 'status-warning'
-		},
-		time() {
-			if (!this.profile) {
-				return ''
-			}
-			return new Date(this.profile.time * 1000).toUTCString()
-		},
-		stackElementHasError() {
-			if (this.stackElements === null) {
-				return false
-			}
-			return this.stackElements.some(stackElement => stackElement.error)
-		},
-		validStackElements() {
-			return this.stackElements.filter(stackElement => stackElement.profile)
-		},
-		...mapState(useStore, ['profiles', 'stackElements']),
-	},
-	mounted() {
-		this.loadProfile({ token })
-	},
-	methods: {
-		displayDuration(time) {
-			return (time * 1000.0).toFixed(2)
-		},
-		simplifiedUrl(url) {
-			if (url.startsWith('http')) {
-				const newUrl = new URL(url)
-				return newUrl.pathname + newUrl.search
-			} else {
-				return url
-			}
-		},
-		generateAjaxUrl(stackElement) {
-			return generateUrl('/apps/profiler/profiler/db/{token}', {
-				token: stackElement.profile,
-			})
-		},
-		openProfiler(view) {
-			document.location = generateUrl('/apps/profiler/profiler/{view}/{token}', {
-				view,
-				token: this.token,
-			})
-		},
-		...mapActions(useStore, ['loadProfile']),
-	},
+			}, 0))
+		}
+	})
+	return (cacheTime * 1000).toFixed(1)
+})
+
+const background = computed(() => {
+	if (!profile.value) {
+		return ''
+	}
+	if (profile.value.statusCode === 200) {
+		return 'status-success'
+	}
+	if (profile.value.statusCode === 500) {
+		return 'status-error'
+	}
+	return 'status-warning'
+})
+
+const time = computed(() => {
+	if (!profile.value) {
+		return ''
+	}
+	return new Date(profile.value.time * 1000).toUTCString()
+})
+
+const stackElementHasError = computed((): boolean => {
+	if (store.stackElements === null) {
+		return false
+	}
+	return store.stackElements.some(stackElement => stackElement.error)
+})
+
+const validStackElements = computed((): StackElement[] => {
+	return store.stackElements.filter(stackElement => stackElement.profile)
+})
+
+onMounted(() => store.loadProfile({ token }))
+
+/**
+ *
+ * @param time
+ */
+function displayDuration(time: number): string {
+	return (time * 1000.0).toFixed(2)
+}
+
+/**
+ *
+ * @param url
+ */
+function simplifiedUrl(url: string): string {
+	if (url.startsWith('http')) {
+		const newUrl = new URL(url)
+		return newUrl.pathname + newUrl.search
+	} else {
+		return url
+	}
+}
+
+/**
+ *
+ * @param stackElement
+ */
+function generateAjaxUrl(stackElement: StackElement): string {
+	return generateUrl('/apps/profiler/profiler/db/{token}', {
+		token: stackElement.profile,
+	})
+}
+
+/**
+ *
+ * @param view
+ */
+function openProfiler(view: string): void {
+	document.location = generateUrl('/apps/profiler/profiler/{view}/{token}', {
+		view,
+		token: this.token,
+	})
 }
 </script>
 
