@@ -1,77 +1,77 @@
 {
-	"name": "profiler",
-	"description": "Built-in profiler for Nextcloud",
-	"version": "3.0.0-dev.0",
-	"author": "Carl Schwan <carl@carlschwan.eu>",
-	"contributors": [
-		"Carl Schwan <carl@carlschwan.eu>"
-	],
-	"keywords": [
-		"nextcloud",
-		"files",
-		"performace"
-	],
-	"bugs": {
-		"url": "https://github.com/nextcloud/profiler/issues"
-	},
-	"repository": {
-		"url": "git+https://github.com/nextcloud/profiler.git",
-		"type": "git"
-	},
-	"homepage": "https://github.com/nextcloud/profiler",
-	"license": "AGPL-3.0-or-later",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"build": "vite --mode production build",
-		"dev": "export NODE_ENV=development; vite --mode development build",
-		"watch": "export NODE_ENV=development; vite --mode development build --watch",
-		"lint": "eslint src",
-		"lint:fix": "eslint src --fix",
-		"stylelint": "stylelint src",
-		"stylelint:fix": "stylelint src --fix"
-	},
-	"dependencies": {
-		"@nextcloud/axios": "^2.5.1",
-		"@nextcloud/initial-state": "^2.2.0",
-		"@nextcloud/l10n": "^3.3.0",
-		"@nextcloud/router": "^3.0.1",
-		"@nextcloud/vue": "^9.0.0-rc.5",
-		"@skjnldsv/vue-plyr": "^7.5.0",
-		"@vitejs/plugin-vue": "^6.0.1",
-		"@vue/compat": "^3.5.18",
-		"@vueform/slider": "^2.1.10",
-		"camelcase": "^8.0.0",
-		"nextcloud-server": "^0.15.10",
-		"path-parse": "^1.0.7",
-		"pinia": "^3.0.3",
-		"vue": "^3.5.18",
-		"vue-material-design-icons": "^5.3.1",
-		"vue-router": "^4.5.1"
-	},
-	"browserslist": [
-		"extends @nextcloud/browserslist-config"
-	],
-	"engines": {
-		"node": "^20.0.0",
-		"npm": "^10.0.0"
-	},
-	"devDependencies": {
-		"@babel/plugin-syntax-import-assertions": "^7.27.1",
-		"@babel/plugin-transform-typescript": "^7.28.0",
-		"@nextcloud/browserslist-config": "^3.0.1",
-		"@nextcloud/cypress": "^1.0.0-beta.15",
-		"@nextcloud/eslint-config": "^8.4.2",
-		"@nextcloud/sharing": "^0.2.5",
-		"@nextcloud/stylelint-config": "^3.1.0",
-		"@nextcloud/vite-config": "^2.4.0",
-		"@types/dockerode": "^3.3.39",
-		"@vue/compiler-sfc": "^3.5.18",
-		"@vue/tsconfig": "^0.5.1",
-		"dockerode": "^4.0.6",
-		"ts-node": "^10.9.2",
-		"tslib": "^2.8.1",
-		"typescript": "^5.7.3",
-		"vite": "^5.4.19"
-	}
+  "name": "profiler",
+  "description": "Built-in profiler for Nextcloud",
+  "version": "3.0.0-dev.0",
+  "author": "Carl Schwan <carl@carlschwan.eu>",
+  "contributors": [
+    "Carl Schwan <carl@carlschwan.eu>"
+  ],
+  "keywords": [
+    "nextcloud",
+    "files",
+    "performace"
+  ],
+  "bugs": {
+    "url": "https://github.com/nextcloud/profiler/issues"
+  },
+  "repository": {
+    "url": "git+https://github.com/nextcloud/profiler.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/nextcloud/profiler",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "vite --mode production build",
+    "dev": "export NODE_ENV=development; vite --mode development build",
+    "watch": "export NODE_ENV=development; vite --mode development build --watch",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "stylelint": "stylelint src",
+    "stylelint:fix": "stylelint src --fix"
+  },
+  "dependencies": {
+    "@nextcloud/axios": "^2.5.1",
+    "@nextcloud/initial-state": "^2.2.0",
+    "@nextcloud/l10n": "^3.3.0",
+    "@nextcloud/router": "^3.0.1",
+    "@nextcloud/vue": "^9.0.0-rc.5",
+    "@skjnldsv/vue-plyr": "^7.5.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/compat": "^3.5.18",
+    "@vueform/slider": "^2.1.10",
+    "camelcase": "^8.0.0",
+    "nextcloud-server": "^0.15.10",
+    "path-parse": "^1.0.7",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.18",
+    "vue-material-design-icons": "^5.3.1",
+    "vue-router": "^4.5.1"
+  },
+  "browserslist": [
+    "extends @nextcloud/browserslist-config"
+  ],
+  "engines": {
+    "node": "^22.0.0",
+    "npm": "^10.5.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-import-assertions": "^7.27.1",
+    "@babel/plugin-transform-typescript": "^7.28.0",
+    "@nextcloud/browserslist-config": "^3.0.1",
+    "@nextcloud/cypress": "^1.0.0-beta.15",
+    "@nextcloud/eslint-config": "^8.4.2",
+    "@nextcloud/sharing": "^0.2.5",
+    "@nextcloud/stylelint-config": "^3.1.0",
+    "@nextcloud/vite-config": "^2.4.0",
+    "@types/dockerode": "^3.3.39",
+    "@vue/compiler-sfc": "^3.5.18",
+    "@vue/tsconfig": "^0.5.1",
+    "dockerode": "^4.0.6",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.19"
+  }
 }
