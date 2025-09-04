@@ -298,7 +298,7 @@ function tableUse(tableUsage): void {
  */
 function openSimilarQuery(index: number): void {
 	const paramReferences = {}
-	this.duplicateQueries[index].indexes.forEach(indexDuplicate => {
+	duplicateQueries.value[index].indexes.forEach(indexDuplicate => {
 		const paramStr = JSON.stringify(queries.value[indexDuplicate].params)
 		if (paramReferences[paramStr] === undefined) {
 			paramReferences[paramStr] = {
