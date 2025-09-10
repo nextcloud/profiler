@@ -20,7 +20,7 @@ If your issue appears to be a bug, and hasn't been reported, open a new issue.
 Help us to maximize the effort we can spend fixing issues and adding new features, by not reporting duplicate issues.
 
 ## Translations
-Please submit translations via [Transifex](https://www.transifex.com/nextcloud/nextcloud/profiler/).
+Please submit translations via [Transifex](https://explore.transifex.com/nextcloud/).
 
 ## Contributing to Source Code
 
