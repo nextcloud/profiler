@@ -144,8 +144,8 @@ export const useStore = defineStore('main', () => {
 	 * @param root0
 	 * @param root0.profiles
 	 */
-	function addImportedProfiles({ profiles }) {
-		for (const profile of profiles) {
+	function addImportedProfiles({ profiles: profilesToImport }) {
+		for (const profile of profilesToImport) {
 			importedProfiles.value.push(profile)
 			profiles.value[profile.token] = profile
 		}
