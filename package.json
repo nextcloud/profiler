@@ -45,6 +45,7 @@
     "nextcloud-server": "^0.15.10",
     "path-parse": "^1.0.7",
     "pinia": "^3.0.3",
+    "vite-plugin-node-polyfills": "^0.24.0",
     "vue": "^3.5.18",
     "vue-material-design-icons": "^5.3.1",
     "vue-router": "^4.5.1"
@@ -72,6 +73,6 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
-    "vite": "^5.4.19"
+    "vite": "^7.1.5"
   }
 }
