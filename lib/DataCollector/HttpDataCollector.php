@@ -32,7 +32,7 @@ class HttpDataCollector extends AbstractDataCollector {
 				'method' => $request->getMethod(),
 				'content' => $content,
 				'httpProtocol' => $request->getHttpProtocol(),
-				'userAgent' => $_SERVER['HTTP_USER_AGENT'],
+				'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
 				'params' => $content,
 			],
 			'response' => [
