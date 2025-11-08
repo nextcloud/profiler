@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div>
 		<div>
-			<button @click="expanded = !expanded">
+			<button @click.stop="expanded = !expanded">
 				Toggle Backtrace
 			</button>
 		</div>
