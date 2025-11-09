@@ -12,6 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 		</div>
 		<div id="db-queries" class="anchor-space" />
 		<h2>Database queries</h2>
+		<button @click="hideAllDetails">
+			Hide all details
+		</button>
+		<button @click="showAllDetails">
+			Show all details
+		</button>
 		<div style="overflow-x:auto;">
 			<table>
 				<thead>
@@ -28,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(query, index) in queries" :key="index">
+					<tr v-for="(query, index) in queries" :key="index" @click="query.showDetails = !query.showDetails">
 						<td :id="'queries-' + index">
 							{{ index }}
 						</td>
@@ -38,14 +44,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 						<td>
 							<pre>
 {{ query.sql }}
-						</pre>
-							<h4>Parameters:</h4>
-							{{ query.params }}
-							<button v-if="query.explainable && explainedQueries[index] === undefined" @click="explainQuery(index)">
-								Explain query
-							</button>
-							<QueryExplanation v-else-if="explainedQueries[index]" :explanation="explainedQueries[index] ? explainedQueries[index] : ''" />
-							<Backtrace v-if="query.backtrace" :backtrace="query.backtrace" />
+							</pre>
+							<div v-if="query.showDetails">
+								<h4>Parameters:</h4>
+								{{ query.params }}
+								<button v-if="query.explainable && explainedQueries[index] === undefined" @click.stop="explainQuery(index)">
+									Explain query
+								</button>
+								<QueryExplanation v-else-if="explainedQueries[index]" :explanation="explainedQueries[index] ? explainedQueries[index] : ''" />
+								<Backtrace v-if="query.backtrace" :backtrace="query.backtrace" />
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -345,6 +353,18 @@ function openTableUseDetails(index): void {
  */
 function anchor(index: number): string {
 	return '#queries-' + index
+}
+
+function hideAllDetails(): void {
+	Object.values(queries.value).forEach(query => {
+		query.showDetails = false
+	})
+}
+
+function showAllDetails(): void {
+	Object.values(queries.value).forEach(query => {
+		query.showDetails = true
+	})
 }
 </script>
 
