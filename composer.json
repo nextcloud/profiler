@@ -8,7 +8,7 @@
 	"description": "profiler",
 	"license": "AGPL",
 	"require-dev": {
-		"nextcloud/ocp": "dev-master"
+		"nextcloud/ocp": "dev-stable33"
 	},
 	"config": {
 		"optimize-autoloader": true,
