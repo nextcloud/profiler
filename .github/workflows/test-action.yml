@@ -60,6 +60,8 @@ jobs:
         uses: icewind1991/blueprint@00504403f76cb2a09efd0d16793575055e6f63cb # v0.1.2
         with:
           blueprint: tests/blueprints/basic.toml
+          ref: ${{ matrix.server-versions }}
+
       - name: Run first measurements
         uses: ./action
         with:
