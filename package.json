@@ -63,7 +63,7 @@
     "@nextcloud/browserslist-config": "^3.1.2",
     "@nextcloud/cypress": "^1.0.0-beta.15",
     "@nextcloud/eslint-config": "^8.4.2",
-    "@nextcloud/sharing": "^0.3.0",
+    "@nextcloud/sharing": "^0.4.0",
     "@nextcloud/stylelint-config": "^3.1.1",
     "@nextcloud/vite-config": "^2.5.2",
     "@types/dockerode": "^4.0.1",
