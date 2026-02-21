@@ -48,7 +48,7 @@
     "vite-plugin-node-polyfills": "^0.25.0",
     "vue": "^3.5.18",
     "vue-material-design-icons": "^5.3.1",
-    "vue-router": "^5.0.2"
+    "vue-router": "^5.0.3"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
