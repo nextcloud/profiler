@@ -39,7 +39,7 @@
     "@nextcloud/vue": "^9.5.0",
     "@skjnldsv/vue-plyr": "^7.5.0",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@vue/compat": "^3.5.28",
+    "@vue/compat": "^3.5.29",
     "@vueform/slider": "^2.1.10",
     "camelcase": "^9.0.0",
     "nextcloud-server": "^0.15.10",
