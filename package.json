@@ -38,7 +38,7 @@
     "@nextcloud/router": "^3.1.0",
     "@nextcloud/vue": "^9.8.0",
     "@skjnldsv/vue-plyr": "^7.5.0",
-    "@vitejs/plugin-vue": "^6.0.6",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/compat": "^3.5.34",
     "@vueform/slider": "^2.1.10",
     "camelcase": "^9.0.0",
