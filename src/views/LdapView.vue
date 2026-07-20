@@ -47,12 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script lang="ts" setup>
-import Backtrace from '../components/Backtrace.vue'
+import type { Ldap } from '../store.ts'
 
-import { useStore } from '../store'
-import type { Ldap } from '../store'
-import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import Backtrace from '../components/Backtrace.vue'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const route = useRoute()

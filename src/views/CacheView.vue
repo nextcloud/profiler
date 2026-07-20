@@ -59,10 +59,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '../store'
-import { useRoute } from 'vue-router'
+import type { CacheQuery } from '../store.ts'
+
 import { computed } from 'vue'
-import type { CacheQuery } from '../store'
+import { useRoute } from 'vue-router'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const route = useRoute()
@@ -71,7 +72,7 @@ const cacheProfiles = computed<CacheQuery>(() => {
 	if (!store.profiles[route.params.token]?.collectors) {
 		return []
 	}
-	return Object.entries(store.profiles[route.params.token].collectors).filter(entry => {
+	return Object.entries(store.profiles[route.params.token].collectors).filter((entry) => {
 		const [key] = entry
 		return key.includes('cache')
 	})
@@ -79,7 +80,7 @@ const cacheProfiles = computed<CacheQuery>(() => {
 
 const cacheTotal = computed<number>(() => {
 	let cacheTotal = 0
-	cacheProfiles.value.forEach(entry => {
+	cacheProfiles.value.forEach((entry) => {
 		const [, value] = entry
 		cacheTotal += value.cacheMiss + value.cacheHit
 	})
@@ -88,7 +89,7 @@ const cacheTotal = computed<number>(() => {
 
 const cacheHits = computed<number>(() => {
 	let cacheTotal = 0
-	cacheProfiles.value.forEach(entry => {
+	cacheProfiles.value.forEach((entry) => {
 		const [, value] = entry
 		cacheTotal += value.cacheHit
 	})
@@ -97,7 +98,7 @@ const cacheHits = computed<number>(() => {
 
 const cacheTime = computed<number>(() => {
 	let cacheTime = 0
-	cacheProfiles.value.forEach(entry => {
+	cacheProfiles.value.forEach((entry) => {
 		const [, value] = entry
 		cacheTime += (value.queries.reduce((acc, query) => {
 			return query.end - query.start + acc

@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(duplicate, index) in duplicateQueries" :key="'dup-'+index">
+					<tr v-for="(duplicate, index) in duplicateQueries" :key="'dup-' + index">
 						<td>
 							{{ index }}
 						</td>
@@ -147,7 +147,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(tableUsage, index) in tableQueries" :key="'tab-'+index">
+					<tr v-for="(tableUsage, index) in tableQueries" :key="'tab-' + index">
 						<td>
 							{{ index }}
 						</td>
@@ -184,13 +184,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script lang="ts" setup>
-import QueryExplanation from '../components/QueryExplanation.vue'
-import Backtrace from '../components/Backtrace.vue'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import { useStore } from '../store'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import Backtrace from '../components/Backtrace.vue'
+import QueryExplanation from '../components/QueryExplanation.vue'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const route = useRoute()
@@ -217,7 +217,7 @@ const duplicateQueries = computed(() => {
 		return []
 	}
 	const querySql = []
-	Object.entries(queries).forEach(entry => {
+	Object.entries(queries).forEach((entry) => {
 		const [index, query] = entry
 		if (querySql[query.sql] === undefined) {
 			querySql[query.sql] = {
@@ -232,7 +232,7 @@ const duplicateQueries = computed(() => {
 			querySql[query.sql].indexes.push(Number(index))
 		}
 	})
-	return Object.values(querySql).filter(query => {
+	return Object.values(querySql).filter((query) => {
 		return query.count > 1
 	}).sort((a, b) => b.time - a.time)
 })
@@ -243,13 +243,13 @@ const tableQueries = computed(() => {
 		return []
 	}
 	const tableQueries = []
-	Object.entries(queries).forEach(entry => {
+	Object.entries(queries).forEach((entry) => {
 		const [index, query] = entry
 		const matches = query.sql.matchAll(/(from|join|into|update)\s+["`](\w+\.?\w+\s*)["`]/gi)
 		if (matches === null) {
 			return
 		}
-		matches.forEach(match => {
+		matches.forEach((match) => {
 			const typeFrom = match[1].toLowerCase()
 			const table = match[2]
 			if (tableQueries[table] === undefined) {
@@ -267,7 +267,7 @@ const tableQueries = computed(() => {
 			tableQueries[table].types[typeFrom]++
 		})
 	})
-	return Object.entries(tableQueries).map(entry => {
+	return Object.entries(tableQueries).map((entry) => {
 		const [table, query] = entry
 		query.table = table
 		return query
@@ -291,7 +291,7 @@ function explainQuery(index: number): void {
  */
 function tableUse(tableUsage): void {
 	const types = []
-	Object.entries(tableUsage.types).forEach(entry => {
+	Object.entries(tableUsage.types).forEach((entry) => {
 		const [type, count] = entry
 		if (count > 0) {
 			types.push(type + ': ' + count)
@@ -306,7 +306,7 @@ function tableUse(tableUsage): void {
  */
 function openSimilarQuery(index: number): void {
 	const paramReferences = {}
-	this.duplicateQueries[index].indexes.forEach(indexDuplicate => {
+	this.duplicateQueries[index].indexes.forEach((indexDuplicate) => {
 		const paramStr = JSON.stringify(queries.value[indexDuplicate].params)
 		if (paramReferences[paramStr] === undefined) {
 			paramReferences[paramStr] = {
@@ -318,14 +318,14 @@ function openSimilarQuery(index: number): void {
 			paramReferences[paramStr].indexes.push(indexDuplicate)
 		}
 	})
-	const singles = Object.entries(paramReferences).filter(entry => {
+	const singles = Object.entries(paramReferences).filter((entry) => {
 		return entry[1].count === 1
-	}).map(entry => {
+	}).map((entry) => {
 		return entry[1].indexes[0]
 	})
-	const multiples = Object.entries(paramReferences).filter(entry => {
+	const multiples = Object.entries(paramReferences).filter((entry) => {
 		return entry[1].count > 1
-	}).map(entry => {
+	}).map((entry) => {
 		const [paramStr, param] = entry
 		return {
 			count: param.count,
@@ -355,14 +355,20 @@ function anchor(index: number): string {
 	return '#queries-' + index
 }
 
+/**
+ *
+ */
 function hideAllDetails(): void {
-	Object.values(queries.value).forEach(query => {
+	Object.values(queries.value).forEach((query) => {
 		query.showDetails = false
 	})
 }
 
+/**
+ *
+ */
 function showAllDetails(): void {
-	Object.values(queries.value).forEach(query => {
+	Object.values(queries.value).forEach((query) => {
 		query.showDetails = true
 	})
 }

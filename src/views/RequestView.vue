@@ -38,10 +38,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script setup lang="ts">
-import { useStore } from '../store'
-import { useRoute } from 'vue-router'
+import type { Http, Memory, Router } from '../store.ts'
+
 import { computed } from 'vue'
-import type { Http, Router, Memory } from '../store'
+import { useRoute } from 'vue-router'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const route = useRoute()

@@ -10,7 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 			{{ event.id }} - {{ event.description }} - {{ duration }}ms - {{ event.queries.length }} queries
 		</div>
 		<div v-if="children.length > 0" class="children" :style="`height: ${childHeight}px`">
-			<div v-for="(event) in children"
+			<div
+				v-for="(event) in children"
 				:key="event.id"
 				:style="event.style"
 				class="child">
@@ -29,19 +30,22 @@ export default {
 			required: true,
 		},
 	},
+
 	emits: ['click'],
 	computed: {
 		children() {
-			return this.event.children.map(child => {
+			return this.event.children.map((child) => {
 				const startRelative = (child.start - this.event.start) / this.event.duration
 				const durationRelative = child.duration / this.event.duration
 				child.style = `left: ${(startRelative) * 100}%; width: ${durationRelative * 100}%`
 				return child
 			})
 		},
+
 		childHeight() {
 			return 25 * this.event.childDepth
 		},
+
 		duration() {
 			return (this.event.duration * 1000).toFixed(1)
 		},

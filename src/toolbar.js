@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { createApp } from 'vue'
 import { createPinia, storeToRefs } from 'pinia'
-import { useStore } from './store.ts'
+import { createApp } from 'vue'
 import App from './views/ProfilerToolbar.vue'
+import logger from './logger.ts'
+import { useStore } from './store.ts'
 
 const app = createApp(App)
 
@@ -57,14 +58,19 @@ if (window.fetch && window.fetch.polyfill === undefined) {
 				stackElements.value.push(stackElement)
 			}, function(e) {
 				stackElements.value.push(stackElement)
-				console.error(e)
+				logger.error(e)
 			})
 		}
 		return promise
 	}
 }
 
-const extractHeaders = function(xhr, stackElement) {
+/**
+ *
+ * @param xhr
+ * @param stackElement
+ */
+function extractHeaders(xhr, stackElement) {
 	/* Here we avoid to call xhr.getResponseHeader in order to */
 	/* prevent polluting the console with CORS security errors */
 	const allHeaders = xhr.getAllResponseHeaders()
@@ -81,7 +87,7 @@ const extractHeaders = function(xhr, stackElement) {
 
 if (window.XMLHttpRequest && XMLHttpRequest.prototype.addEventListener) {
 	const proxied = XMLHttpRequest.prototype.open
-	XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+	XMLHttpRequest.prototype.open = function(method, url) {
 		const self = this
 		/* prevent logging AJAX calls to static and inline files, like templates */
 		let path = url
