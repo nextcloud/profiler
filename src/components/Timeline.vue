@@ -7,7 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
 	<div class="timeline">
 		<div class="slider">
-			<Slider v-model="range"
+			<Slider
+				v-model="range"
 				:min="0"
 				:max="duration"
 				:step="0.1" />
@@ -19,15 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import TimelineNode from './TimelineNode.vue'
-import '@vueform/slider/themes/default.css'
 import Slider from '@vueform/slider'
+import TimelineNode from './TimelineNode.vue'
 
-/**
- *
- * @param time
- * @param low
- */
+import '@vueform/slider/themes/default.css'
+
 function toMs(time, low) {
 	if (low) {
 		return Math.floor(time * 10_000) / 10
@@ -42,21 +39,25 @@ export default {
 		TimelineNode,
 		Slider,
 	},
+
 	props: {
 		events: {
 			type: Object,
 			required: true,
 		},
+
 		queries: {
 			type: Object,
 			required: true,
 		},
 	},
+
 	data() {
 		return {
 			range: [0, toMs(this.events.runtime.stop - this.events.init.start)],
 		}
 	},
+
 	computed: {
 		zoomStyle() {
 			const duration = (this.events.runtime.stop - this.events.init.start) * 1000
@@ -65,14 +66,16 @@ export default {
 			const left = this.range[0] / width
 			return `margin-left: ${-left * 100}%; width: ${zoom * 100}%`
 		},
+
 		duration() {
 			return toMs(this.events.runtime.stop - this.events.init.start)
 		},
+
 		eventTree() {
 			const runtimeStop = this.events.runtime.stop
 			const events = Object.values(this.events)
 			const queries = Object.values(this.queries)
-			events.forEach(event => {
+			events.forEach((event) => {
 				if (!event.stop) {
 					event.stop = runtimeStop
 				}
@@ -88,7 +91,7 @@ export default {
 				}
 			})
 			const startTime = events[0].start
-			const stopTime = Math.max(...events.map(event => event.stop))
+			const stopTime = Math.max(...events.map((event) => event.stop))
 			let current = {
 				id: 'root',
 				duration: stopTime - startTime,
@@ -111,7 +114,7 @@ export default {
 					children: [],
 					childDepth: 0,
 					parents: [],
-					queries: queries.filter(query => (query.start >= event.start && query.start < event.stop)),
+					queries: queries.filter((query) => (query.start >= event.start && query.start < event.stop)),
 				}
 				while (event.stop > current.stop) {
 					current = stack.pop()
@@ -135,6 +138,7 @@ export default {
 			return stack[0]
 		},
 	},
+
 	methods: {
 		toMs,
 	},

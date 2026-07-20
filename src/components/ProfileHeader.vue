@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { useStore } from '../store'
 import { mapState } from 'pinia'
+import { useStore } from '../store.ts'
 
 /**
  * Download a string as textfile
@@ -49,6 +49,7 @@ export default {
 		profile() {
 			return this.profiles[this.$route.params.token]
 		},
+
 		background() {
 			if (!this.profile) {
 				return ''
@@ -61,17 +62,21 @@ export default {
 			}
 			return 'status-warning'
 		},
+
 		time() {
 			if (!this.profile) {
 				return ''
 			}
 			return new Date(this.profile.time * 1000).toUTCString()
 		},
+
 		queriesNumber() {
 			return Object.values(this.profile.collectors.db.queries).length
 		},
+
 		...mapState(useStore, ['profiles']),
 	},
+
 	methods: {
 		exportProfile() {
 			const profile = this.profile

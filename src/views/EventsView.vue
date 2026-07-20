@@ -49,20 +49,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script setup lang="ts">
-import Timeline from '../components/Timeline.vue'
-import { useStore } from '../store'
-import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import Timeline from '../components/Timeline.vue'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const route = useRoute()
 
-const objectMap = (obj, fn) =>
-	Object.fromEntries(
-		Object.entries(obj).map(
-			([k, v], i) => [k, fn(v, k, i)],
-		),
-	)
+function objectMap(obj, fn) {
+	return Object.fromEntries(Object.entries(obj).map(([k, v], i) => [k, fn(v, k, i)]))
+}
 
 const start = computed(() => {
 	return store.profiles[route.params.token]?.collectors.event.init?.start
@@ -74,11 +71,11 @@ const queries = computed(() => {
 
 const events = computed(() => {
 	const queryValues = Object.values(queries.value)
-	return objectMap(store.profiles[route.params.token]?.collectors.event || {}, event => ({
+	return objectMap(store.profiles[route.params.token]?.collectors.event || {}, (event) => ({
 		durationMs: (event.duration * 1000).toFixed(1),
 		startMs: ((event.start - start.value) * 1000).toFixed(1),
 		stopMs: ((event.stop - start.value) * 1000).toFixed(1),
-		queries: queryValues.filter(query => (query.start >= event.start && query.start < event.stop)),
+		queries: queryValues.filter((query) => (query.start >= event.start && query.start < event.stop)),
 		...event,
 	}))
 })

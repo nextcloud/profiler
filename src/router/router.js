@@ -2,14 +2,14 @@
 // SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { generateUrl, getRootUrl } from '@nextcloud/router'
 import { createRouter, createWebHistory } from 'vue-router'
+import CacheView from '../views/CacheView.vue'
 import DatabaseProfilerView from '../views/DatabaseProfilerView.vue'
+import EventsView from '../views/EventsView.vue'
+import LdapView from '../views/LdapView.vue'
 import LoadingView from '../views/LoadingView.vue'
 import RequestView from '../views/RequestView.vue'
-import LdapView from '../views/LdapView.vue'
-import CacheView from '../views/CacheView.vue'
-import EventsView from '../views/EventsView.vue'
-import { getRootUrl, generateUrl } from '@nextcloud/router'
 
 const webRootWithIndexPHP = getRootUrl() + '/index.php'
 const doesURLContainIndexPHP = window.location.pathname.startsWith(webRootWithIndexPHP)

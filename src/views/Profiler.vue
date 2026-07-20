@@ -5,11 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <template>
-	<NcContent app-name="profiler">
+	<NcContent appName="profiler">
 		<NcAppNavigation>
 			<template #list>
 				<NcAppNavigationCaption name="Categories" />
-				<NcAppNavigationItem v-for="cat in categoryInfo"
+				<NcAppNavigationItem
+					v-for="cat in categoryInfo"
 					:key="cat.id"
 					:to="{ name: cat.id, params: {token: token} }"
 					:name="cat.name">
@@ -20,11 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 				<NcAppNavigationCaption name="Requests" />
 				<div class="select-container">
-					<NcSelect v-model="selectedProfile"
+					<NcSelect
+						v-model="selectedProfile"
 						:options="recentProfiles.concat(store.importedProfiles)"
 						class="select"
 						label="url"
-						track-by="token" />
+						trackBy="token" />
 				</div>
 
 				<NcAppNavigationCaption name="Import requests" />
@@ -42,23 +44,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script setup lang="ts">
 import { loadState } from '@nextcloud/initial-state'
+import { onMounted, ref, watch } from 'vue'
+import { onBeforeRouteUpdate, useRouter } from 'vue-router'
+import NcAppContent from '@nextcloud/vue/components/NcAppContent'
+import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation'
 import NcAppNavigationCaption
 	from '@nextcloud/vue/components/NcAppNavigationCaption'
-import NcContent from '@nextcloud/vue/components/NcContent'
-import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation'
 import NcAppNavigationItem from '@nextcloud/vue/components/NcAppNavigationItem'
+import NcContent from '@nextcloud/vue/components/NcContent'
 import NcSelect from '@nextcloud/vue/components/NcSelect'
-import NcAppContent from '@nextcloud/vue/components/NcAppContent'
-import ProfileHeader from '../components/ProfileHeader.vue'
-import DatabaseOutline from 'vue-material-design-icons/DatabaseOutline.vue'
-import ChartGantt from 'vue-material-design-icons/ChartGantt.vue'
-import Cached from 'vue-material-design-icons/Cached.vue'
 import Account from 'vue-material-design-icons/Account.vue'
+import Cached from 'vue-material-design-icons/Cached.vue'
+import ChartGantt from 'vue-material-design-icons/ChartGantt.vue'
+import DatabaseOutline from 'vue-material-design-icons/DatabaseOutline.vue'
 import ServerNetwork from 'vue-material-design-icons/ServerNetwork.vue'
-
-import { watch, ref, onMounted } from 'vue'
-import { useStore } from '../store'
-import { useRouter, onBeforeRouteUpdate } from 'vue-router'
+import ProfileHeader from '../components/ProfileHeader.vue'
+import { useStore } from '../store.ts'
 
 const router = useRouter()
 const store = useStore()
@@ -120,10 +121,6 @@ onMounted(() => {
 	store.loadProfile({ token: token.value })
 })
 
-/**
- *
- * @param event
- */
 function importFiles(event) {
 	for (const file of event.target.files) {
 		store.importProfile({ file })

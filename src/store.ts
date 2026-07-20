@@ -1,38 +1,38 @@
 // SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { defineStore } from 'pinia'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 interface BacktraceRow {
-	file: string,
-	line: number,
-	class: string|null,
-	type: string,
-	function: string,
+	file: string
+	line: number
+	class: string | null
+	type: string
+	function: string
 }
 
 interface Memory {
-	memory: number,
-	memory_limit: number,
+	memory: number
+	memory_limit: number
 }
 
 interface Router {
-	appName: string,
-	controllerName: string,
-	actionName: string,
+	appName: string
+	controllerName: string
+	actionName: string
 }
 
 interface DbQuery {
-	executionMS: number,
-	start: number,
-	end: number,
+	executionMS: number
+	start: number
+	end: number
 }
 
 interface Db {
-	queries: DbQuery[],
+	queries: DbQuery[]
 }
 
 interface Headers {
@@ -44,30 +44,30 @@ interface Parameters {
 }
 
 interface Request {
-	url: string,
-	method: string,
-	userAgent: string,
-	httpProtocol: string,
-	params: Parameters,
+	url: string
+	method: string
+	userAgent: string
+	httpProtocol: string
+	params: Parameters
 }
 
 interface Response {
-	statusCode: number,
-	params: object,
-	ETag: string,
-	headers: Headers,
+	statusCode: number
+	params: object
+	ETag: string
+	headers: Headers
 }
 
 interface Http {
-	request: Request,
-	response: Response,
+	request: Request
+	response: Response
 }
 
 interface CacheEntry {
-	end: number,
-	start: number,
-	op: string,
-	hit: boolean,
+	end: number
+	start: number
+	op: string
+	hit: boolean
 }
 
 interface Cache {
@@ -75,36 +75,37 @@ interface Cache {
 }
 
 interface LdapQuery {
-	start: number,
+	start: number
 	end: number
-	query: string,
-	args: string[],
-	backtrace: BacktraceRow[],
+	query: string
+	args: string[]
+	backtrace: BacktraceRow[]
 }
 
 interface Collector {
-	memory: Memory,
-	ldap: LdapQuery[],
-	router: Router,
-	http: Http,
-	db: Db,
+	memory: Memory
+	ldap: LdapQuery[]
+	router: Router
+	http: Http
+	db: Db
 	[index: string]: Cache
 }
 
 interface Profile {
-	collectors: Collector,
+	collectors: Collector
 }
 
 interface Profiles {
-	[index: string]: Profile;
+	[index: string]: Profile
 }
 
 interface StackElement {
-	profile: Profile,
+	profile: Profile
 }
 
 /**
  * Read a file to string
+ *
  * @param file
  */
 function readFile(file: Blob): Promise<string> {
@@ -172,7 +173,7 @@ export const useStore = defineStore('main', () => {
 	 * @param root0.file
 	 */
 	function importProfile({ file }) {
-		readFile(file).then(content => addImportedProfiles({ profiles: JSON.parse(content) }))
+		readFile(file).then((content) => addImportedProfiles({ profiles: JSON.parse(content) }))
 	}
 
 	return { profiles, stackElements, importedProfiles, addProfile, addImportedProfiles, loadProfile, importProfile }

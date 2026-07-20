@@ -6,10 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
 	<div id="profiler-toolbar">
-		<footer v-if="profile"
+		<footer
+			v-if="profile"
 			class="bottom-bar"
 			:class="{ 'bottom-bar-closed': !open }">
-			<div v-if="open"
+			<div
+				v-if="open"
 				role="button"
 				class="toolbar-block"
 				@click="openProfiler('http')">
@@ -34,7 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 					<div><b>Token:</b> {{ profile.token }}</div>
 				</div>
 			</div>
-			<div v-if="open"
+			<div
+				v-if="open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('event')">
@@ -65,7 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				</div>
 			</div>
 
-			<div v-if="open"
+			<div
+				v-if="open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('db')">
@@ -77,13 +81,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				</div>
 			</div>
 
-			<div v-if="profile.collectors.ldap && open"
+			<div
+				v-if="profile.collectors.ldap && open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('ldap')">
 				<Account :size="18" class="mr-3" />
 				{{ profile.collectors.ldap.length }} LDAP request
-				<div v-if="profile.collectors.ldap.length > 0"
+				<div
+					v-if="profile.collectors.ldap.length > 0"
 					class="info"
 					style="width: 500px; max-height: 600px; overflow-x: scroll">
 					<div>
@@ -94,13 +100,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				</div>
 			</div>
 
-			<div v-if="cacheTotal > 0 && open"
+			<div
+				v-if="cacheTotal > 0 && open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				@click="openProfiler('cache')">
 				<Server :size="18" class="mr-3" />
 				{{ cacheHits }} / {{ cacheTotal }} cache hits
-				<div class="info"
+				<div
+					class="info"
 					style="width: 200px; max-height: 600px; overflow-x: scroll">
 					<div>
 						<b>Cache hits:</b> {{ cacheHits }} / {{ cacheTotal }}
@@ -109,7 +117,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				</div>
 			</div>
 
-			<div v-if="open"
+			<div
+				v-if="open"
 				role="button"
 				class="toolbar-block text-v-center px-3"
 				:class="{open: xhrOpen, closed: !xhrOpen, hasError: stackElementHasError}"
@@ -117,7 +126,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 				<ChevronUp v-if="xhrOpen" class="mr-3" :size="18" />
 				<ChevronDown v-else class="mr-3" :size="18" />
 				{{ store.stackElements.length }} XHR requests
-				<table class="info"
+				<table
+					class="info"
 					style="max-width: 900px; max-height: 600px; min-height: 600px; overflow: scroll;">
 					<tr v-for="(stackElement, index) in validStackElements" :key="index" style="cursor: pointer">
 						<td class="pr-3">
@@ -148,7 +158,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 					</tr>
 				</table>
 			</div>
-			<div class="toggle-button toolbar-block text-v-center px-3"
+			<div
+				class="toggle-button toolbar-block text-v-center px-3"
 				@click="open = !open">
 				{{ open ? 'Close' : 'Open' }}
 			</div>
@@ -157,16 +168,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script lang="ts" setup>
+import type { DbQuery, Profile, StackElement } from '../store.ts'
+
 import { loadState } from '@nextcloud/initial-state'
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from '../store'
-import type { DbQuery, Profile, StackElement } from '../store'
 import { generateUrl } from '@nextcloud/router'
-import Database from 'vue-material-design-icons/Database.vue'
+import { computed, onMounted, ref } from 'vue'
 import Account from 'vue-material-design-icons/Account.vue'
 import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
 import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
+import Database from 'vue-material-design-icons/Database.vue'
 import Server from 'vue-material-design-icons/Server.vue'
+import { useStore } from '../store.ts'
 
 const store = useStore()
 const token = loadState('profiler', 'request-token')
@@ -195,7 +207,7 @@ const ldapQueryTime = computed(() => {
 
 const cacheTotal = computed(() => {
 	let cacheTotal = 0
-	Object.entries(profile.value.collectors).forEach(entry => {
+	Object.entries(profile.value.collectors).forEach((entry) => {
 		const [key, value] = entry
 		if (key.includes('cache')) {
 			cacheTotal += value.cacheMiss + value.cacheHit
@@ -206,7 +218,7 @@ const cacheTotal = computed(() => {
 
 const cacheHits = computed(() => {
 	let cacheTotal = 0
-	Object.entries(profile.value.collectors).forEach(entry => {
+	Object.entries(profile.value.collectors).forEach((entry) => {
 		const [key, value] = entry
 		if (key.includes('cache')) {
 			cacheTotal += value.cacheHit
@@ -217,7 +229,7 @@ const cacheHits = computed(() => {
 
 const cacheTime = computed(() => {
 	let cacheTime = 0
-	Object.entries(profile.value.collectors).forEach(entry => {
+	Object.entries(profile.value.collectors).forEach((entry) => {
 		const [key, value] = entry
 		if (key.includes('cache')) {
 			cacheTime += (value.queries.reduce((acc, query) => {
@@ -252,11 +264,11 @@ const stackElementHasError = computed((): boolean => {
 	if (store.stackElements === null) {
 		return false
 	}
-	return store.stackElements.some(stackElement => stackElement.error)
+	return store.stackElements.some((stackElement) => stackElement.error)
 })
 
 const validStackElements = computed((): StackElement[] => {
-	return store.stackElements.filter(stackElement => stackElement.profile)
+	return store.stackElements.filter((stackElement) => stackElement.profile)
 })
 
 onMounted(() => store.loadProfile({ token }))
