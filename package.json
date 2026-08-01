@@ -44,7 +44,7 @@
     "camelcase": "^9.0.0",
     "nextcloud-server": "^0.15.10",
     "path-parse": "^1.0.7",
-    "pinia": "^4.0.1",
+    "pinia": "^4.0.2",
     "vite-plugin-node-polyfills": "^0.28.0",
     "vue": "^3.5.18",
     "vue-material-design-icons": "^5.3.1",
