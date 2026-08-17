@@ -57,4 +57,16 @@ class MainController extends Controller {
 			'profile' => $this->profiler->loadProfile($token),
 		]);
 	}
+
+	/**
+	 * Search through the stored profiles.
+	 */
+	#[NoCSRFRequired]
+	public function profiles(?string $url = null, ?string $method = null, ?string $statusCode = null, int $limit = 50): DataResponse {
+		$profiles = $this->profiler->find($url, $limit, $method, null, null, $statusCode);
+
+		return new DataResponse([
+			'profiles' => $profiles,
+		]);
+	}
 }

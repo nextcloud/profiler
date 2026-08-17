@@ -9,6 +9,7 @@ import RequestView from '../views/RequestView.vue'
 import LdapView from '../views/LdapView.vue'
 import CacheView from '../views/CacheView.vue'
 import EventsView from '../views/EventsView.vue'
+import ProfilesView from '../views/ProfilesView.vue'
 import { getRootUrl, generateUrl } from '@nextcloud/router'
 
 const webRootWithIndexPHP = getRootUrl() + '/index.php'
@@ -53,6 +54,11 @@ const routes = [
 		name: 'cache',
 		component: CacheView,
 		props: true,
+	},
+	{
+		path: '/apps/profiler/profiles/',
+		name: 'profiles',
+		component: ProfilesView,
 	},
 ]
 

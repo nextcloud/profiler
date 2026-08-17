@@ -11,5 +11,6 @@ return [
 		['name' => 'database_profiler#explain', 'url' => '/explain/{token}/{query}', 'verb' => 'GET'],
 		['name' => 'main#profiler', 'url' => '/profiler/{profiler}/{token}/', 'verb' => 'GET'],
 		['name' => 'main#profileInfo', 'url' => '/profile/{token}/', 'verb' => 'GET'],
+		['name' => 'main#profiles', 'url' => '/profiles', 'verb' => 'GET'],
 	],
 ];

@@ -8,6 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 	<NcContent app-name="profiler">
 		<NcAppNavigation>
 			<template #list>
+				<NcAppNavigationItem :to="{ name: 'profiles' }"
+					name="All profiles">
+					<template #icon>
+						<FormatListBulleted :size="20" />
+					</template>
+				</NcAppNavigationItem>
+
 				<NcAppNavigationCaption name="Categories" />
 				<NcAppNavigationItem v-for="cat in categoryInfo"
 					:key="cat.id"
@@ -55,6 +62,7 @@ import ChartGantt from 'vue-material-design-icons/ChartGantt.vue'
 import Cached from 'vue-material-design-icons/Cached.vue'
 import Account from 'vue-material-design-icons/Account.vue'
 import ServerNetwork from 'vue-material-design-icons/ServerNetwork.vue'
+import FormatListBulleted from 'vue-material-design-icons/FormatListBulleted.vue'
 
 import { watch, ref, onMounted } from 'vue'
 import { useStore } from '../store'
