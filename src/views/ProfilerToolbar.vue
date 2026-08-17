@@ -299,7 +299,7 @@ function generateAjaxUrl(stackElement: StackElement): string {
 function openProfiler(view: string): void {
 	document.location = generateUrl('/apps/profiler/profiler/{view}/{token}', {
 		view,
-		token: this.token,
+		token,
 	})
 }
 </script>
