@@ -12,5 +12,6 @@ return [
 		['name' => 'main#profiler', 'url' => '/profiler/{profiler}/{token}/', 'verb' => 'GET'],
 		['name' => 'main#profileInfo', 'url' => '/profile/{token}/', 'verb' => 'GET'],
 		['name' => 'main#profiles', 'url' => '/profiles', 'verb' => 'GET'],
+		['name' => 'main#profilesPage', 'url' => '/profiles/', 'verb' => 'GET'],
 	],
 ];
