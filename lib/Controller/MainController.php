@@ -69,4 +69,15 @@ class MainController extends Controller {
 			'profiles' => $profiles,
 		]);
 	}
+
+	#[NoCSRFRequired]
+	public function profilesPage(): TemplateResponse {
+		\OCP\Util::addScript('profiler', 'profiler-main');
+		\OCP\Util::addStyle('profiler', 'profiler-main');
+		$profiles = $this->profiler->find(null, 20, null, null, null);
+		$this->initialState->provideInitialState('recentProfiles', $profiles);
+		$this->initialState->provideInitialState('token', 'empty');
+
+		return new TemplateResponse('profiler', 'index', []);
+	}
 }
