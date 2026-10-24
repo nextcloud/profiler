@@ -41,7 +41,7 @@
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/compat": "^3.5.43",
     "@vueform/slider": "^2.1.10",
-    "camelcase": "^9.0.0",
+    "camelcase": "^10.0.0",
     "nextcloud-server": "^0.15.10",
     "path-parse": "^1.0.7",
     "pinia": "^4.0.3",
